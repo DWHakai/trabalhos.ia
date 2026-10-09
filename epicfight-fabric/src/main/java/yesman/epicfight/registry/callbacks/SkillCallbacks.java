@@ -1,7 +1,7 @@
 package yesman.epicfight.registry.callbacks;
 
 import net.minecraft.core.Registry;
-import net.neoforged.neoforge.registries.callback.BakeCallback;
+import yesman.epicfight.platform.registry.callback.BakeCallback;
 import yesman.epicfight.skill.Skill;
 
 public class SkillCallbacks implements BakeCallback<Skill> {

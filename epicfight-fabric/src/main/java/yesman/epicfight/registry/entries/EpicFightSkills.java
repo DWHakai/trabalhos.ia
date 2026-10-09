@@ -1,8 +1,8 @@
 package yesman.epicfight.registry.entries;
 
 import net.minecraft.tags.DamageTypeTags;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.utils.math.ValueModifier;
 import yesman.epicfight.gameasset.Animations;

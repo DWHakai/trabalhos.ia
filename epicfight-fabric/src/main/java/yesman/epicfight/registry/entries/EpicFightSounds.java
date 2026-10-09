@@ -3,8 +3,8 @@ package yesman.epicfight.registry.entries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.main.EpicFightMod;
 
 public final class EpicFightSounds {

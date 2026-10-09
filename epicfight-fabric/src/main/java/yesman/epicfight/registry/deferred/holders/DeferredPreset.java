@@ -1,7 +1,7 @@
 package yesman.epicfight.registry.deferred.holders;
 
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.registry.deferred.ItemPresetRegister;

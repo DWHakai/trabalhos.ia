@@ -3,8 +3,8 @@ package yesman.epicfight.registry.entries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.skill.Skill;
 

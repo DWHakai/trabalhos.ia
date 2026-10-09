@@ -1,7 +1,7 @@
 package yesman.epicfight.api.ex_cap.modules.core.data;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredHolder;
 import yesman.epicfight.registry.deferred.holders.DeferredPreset;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 

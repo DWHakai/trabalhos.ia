@@ -3,7 +3,7 @@ package yesman.epicfight.skill;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
 import yesman.epicfight.api.utils.side.ClientOnly;
 import yesman.epicfight.network.EpicFightNetworkManager;

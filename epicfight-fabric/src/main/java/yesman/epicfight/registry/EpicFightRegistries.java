@@ -2,11 +2,8 @@ package yesman.epicfight.registry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.registries.DeferredRegister;
-import net.neoforged.neoforge.registries.NewRegistryEvent;
-import net.neoforged.neoforge.registries.RegistryBuilder;
+import yesman.epicfight.platform.registry.DeferredRegister;
+import yesman.epicfight.platform.registry.RegistryBuilder;
 import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.SynchedAnimationVariableKey;
 import yesman.epicfight.api.ex_cap.data.Moveset;
@@ -27,7 +24,6 @@ import yesman.epicfight.world.entity.data.ExpandedEntityDataAccessor;
 import java.util.List;
 import java.util.function.Supplier;
 
-@EventBusSubscriber(modid = EpicFight.MODID)
 public abstract class EpicFightRegistries {
     public static final Registry<Supplier<Condition<?>>> CONDITION = new RegistryBuilder<> (Keys.CONDITION).create();
     public static final Registry<ExpandedEntityDataAccessor<?>> EXPANDED_ENTITY_DATA_ACCESSOR = new RegistryBuilder<> (Keys.EXPANDED_ENTITY_DATA_ACCESSOR).sync(true).create();
@@ -92,18 +88,4 @@ public abstract class EpicFightRegistries {
         }
     }
 
-    @SubscribeEvent
-    public static void addNewRegistries(NewRegistryEvent event) {
-        event.register(CONDITION);
-        event.register(BUILDERS);
-        event.register(MOVESETS);
-        event.register(MODIFIERS);
-        event.register(WEAPON_DATA);
-        event.register(MOVESET_DATA);
-        event.register(PROVIDER_CONDITIONALS);
-        event.register(EXPANDED_ENTITY_DATA_ACCESSOR);
-        event.register(SKILL);
-        event.register(SKILL_DATA_KEY);
-        event.register(SYNCHED_ANIMATION_VARIABLE);
-    }
 }

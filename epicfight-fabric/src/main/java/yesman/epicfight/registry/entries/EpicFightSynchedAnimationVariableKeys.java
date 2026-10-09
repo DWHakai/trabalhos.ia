@@ -2,8 +2,8 @@ package yesman.epicfight.registry.entries;
 
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.api.animation.SynchedAnimationVariableKey;
 import yesman.epicfight.api.animation.SynchedAnimationVariableKey.SynchedIndependentAnimationVariableKey;
 import yesman.epicfight.api.utils.ByteBufCodecsExtends;

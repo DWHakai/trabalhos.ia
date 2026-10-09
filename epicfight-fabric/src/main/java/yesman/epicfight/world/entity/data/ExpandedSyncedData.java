@@ -20,7 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.neoforged.neoforge.registries.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredHolder;
 import yesman.epicfight.api.utils.datastructure.ParameterizedHolderHashMap;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.EpicFightNetworkManager.PayloadBundleBuilder;

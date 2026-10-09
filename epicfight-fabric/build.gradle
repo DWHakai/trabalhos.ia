@@ -1,0 +1,127 @@
+plugins {
+    id "fabric-loom" version "1.10-SNAPSHOT"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = "epicfight-fabric"
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    withSourcesJar()
+}
+
+repositories {
+    maven { name = "ParchmentMC"; url = "https://maven.parchmentmc.org" }
+    maven {
+        name = "Fuzs Mod Resources (Forge Config API Port)"
+        url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
+        content { includeGroup "fuzs.forgeconfigapiport" }
+    }
+}
+
+loom {
+    mixin.defaultRefmapName = "epicfight.mixins.refmap.json"
+    accessWidenerPath = file("src/main/resources/epicfight.accesswidener")
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    // Same names as upstream (Mojang mappings + Parchment parameter names), so the
+    // vanilla-facing code does not need any renaming.
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
+    include "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
+}
+
+// ---------------------------------------------------------------------------
+// Code that is not ported yet. It stays in the tree, unchanged from upstream,
+// so it can be diffed against the original and ported piece by piece; it is
+// just left out of compilation. Remove lines from here as each part is ported.
+// See PORTING.md.
+// ---------------------------------------------------------------------------
+sourceSets.main.java {
+    // NeoForge event handlers, to be rewritten on Fabric callbacks/mixins
+    exclude "yesman/epicfight/client/platform/neoforge/**"
+    // Optional integrations with other mods: phase 4
+    exclude "yesman/epicfight/compat/*/**"
+    // Data generation (NeoForge GatherDataEvent): not needed to play,
+    // the generated data is fetched from upstream (src/generated/resources)
+    exclude "yesman/epicfight/data/DataEvents.java"
+    exclude "yesman/epicfight/data/tags/**"
+    exclude "yesman/epicfight/data/recipes/**"
+}
+
+// ---------------------------------------------------------------------------
+// Assets (textures, models, sounds, animations) are "All Rights Reserved" by
+// the Epic Fight team, so this repository does not carry them. They are
+// fetched from the official repository at the pinned commit when you build.
+// ---------------------------------------------------------------------------
+def upstreamDir = layout.buildDirectory.dir("upstream")
+
+tasks.register("fetchUpstreamResources") {
+    group = "epicfight"
+    description = "Fetches the official Epic Fight assets/data at the pinned upstream commit."
+    def commit = project.upstream_commit
+    def repo = project.upstream_repo
+    outputs.dir(upstreamDir)
+    inputs.property("commit", commit)
+    doLast {
+        def dir = upstreamDir.get().asFile
+        def git = { List<String> args ->
+            providers.exec { commandLine(["git", "-C", dir.absolutePath] + args) }.result.get()
+        }
+        if (!new File(dir, ".git").exists()) {
+            dir.mkdirs()
+            git(["init", "-q"])
+            git(["remote", "add", "origin", repo])
+        }
+        git(["fetch", "-q", "--depth", "1", "--filter=blob:none", "origin", commit])
+        git(["checkout", "-q", "FETCH_HEAD", "--", "src/main/resources", "src/generated/resources"])
+    }
+}
+
+tasks.register("syncUpstreamResources", Sync) {
+    group = "epicfight"
+    dependsOn "fetchUpstreamResources"
+    into layout.buildDirectory.dir("upstreamResources")
+    from(upstreamDir.map { it.dir("src/main/resources") }) {
+        include "assets/**", "data/**", "epicfight_logo.png"
+        // NeoForge-only data (loot modifiers, data maps); ported separately
+        exclude "data/neoforge/**"
+    }
+    from(upstreamDir.map { it.dir("src/generated/resources") }) {
+        include "data/**"
+    }
+    // Fabric looks for built-in resource packs under resourcepacks/
+    from(upstreamDir.map { it.dir("src/main/resources/packs") }) {
+        into "resourcepacks"
+    }
+}
+
+sourceSets.main.resources.srcDir(tasks.named("syncUpstreamResources"))
+
+processResources {
+    def props = [version: project.version, loader_version: project.loader_version,
+                 minecraft_version: project.minecraft_version,
+                 forgeconfigapiport_version: project.forgeconfigapiport_version]
+    inputs.properties(props)
+    filesMatching("fabric.mod.json") { expand(props) }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = 21
+    it.options.encoding = "UTF-8"
+}
+
+jar {
+    from("LICENSE", "LICENSE-ASSETS")
+}

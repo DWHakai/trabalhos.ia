@@ -2,7 +2,7 @@ package yesman.epicfight.registry.entries;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.alchemy.Potion;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.main.EpicFightMod;
 
 public final class EpicFightPotions {

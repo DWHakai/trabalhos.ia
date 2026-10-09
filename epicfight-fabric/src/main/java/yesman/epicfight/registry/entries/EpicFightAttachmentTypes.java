@@ -1,8 +1,8 @@
 package yesman.epicfight.registry.entries;
 
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.world.capabilities.provider.AttachmentEntityPatchProvider;

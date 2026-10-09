@@ -2,8 +2,8 @@ package yesman.epicfight.registry.entries;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.data.loot.function.SetSkillFunction;
 import yesman.epicfight.main.EpicFightMod;
 

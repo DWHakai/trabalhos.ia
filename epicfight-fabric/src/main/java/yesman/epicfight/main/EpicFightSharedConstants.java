@@ -1,7 +1,7 @@
 package yesman.epicfight.main;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import yesman.epicfight.api.animation.Animator;
 import yesman.epicfight.api.animation.ServerAnimator;
 import yesman.epicfight.api.client.animation.ClientAnimator;
@@ -20,7 +20,7 @@ public class EpicFightSharedConstants {
 	public static final float EXECUTION_DAMAGE = 2147483647F;
 	
 	// Environment varables
-	public static final boolean IS_DEV_ENV = !FMLEnvironment.production;
+	public static final boolean IS_DEV_ENV = FabricLoader.getInstance().isDevelopmentEnvironment();
 
     // Public server domain in AWS
     public static final String PUBLIC_SERVER_DOMAIN = "https://epic-fight.com";
@@ -40,7 +40,7 @@ public class EpicFightSharedConstants {
 	}
 	
 	public static boolean isPhysicalClient() {
-		return FMLEnvironment.dist == Dist.CLIENT;
+		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
 	}
 
     /**

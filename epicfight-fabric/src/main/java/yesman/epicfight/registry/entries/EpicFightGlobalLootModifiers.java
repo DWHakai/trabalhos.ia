@@ -3,8 +3,8 @@ package yesman.epicfight.registry.entries;
 import com.mojang.serialization.MapCodec;
 
 import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import yesman.epicfight.data.loot.OnSkillBookDroppedByEntity;
 import yesman.epicfight.main.EpicFightMod;

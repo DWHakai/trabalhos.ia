@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "epicfight",
+  "version": "${version}",
+  "name": "Epic Fight (Fabric port)",
+  "description": "Unofficial Fabric port of Epic Fight for personal use. Adds complex game mechanics and fighting styles to your gameplay, while making Minecraft more Souls-like.",
+  "authors": ["Yesman", "Gui", "Asan", "Wayfarer(aka squoshi)", "Fori", "Ellet"],
+  "contact": {
+    "homepage": "https://epicfight-docs.readthedocs.io",
+    "sources": "https://github.com/Epic-Fight/epicfight"
+  },
+  "license": "Code: GPL-3.0; Assets: All Rights Reserved",
+  "icon": "epicfight_logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["yesman.epicfight.fabric.EpicFightFabric"],
+    "client": ["yesman.epicfight.fabric.client.EpicFightFabricClient"]
+  },
+  "accessWidener": "epicfight.accesswidener",
+  "mixins": ["epicfight.mixins.json"],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "~${minecraft_version}",
+    "java": ">=21",
+    "fabric-api": "*",
+    "forgeconfigapiport": ">=${forgeconfigapiport_version}"
+  }
+}

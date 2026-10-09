@@ -6,11 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.ModConfigSpec.*;
 import org.apache.commons.compress.utils.Lists;
@@ -36,7 +32,6 @@ import java.util.stream.Collectors;
 
 import static yesman.epicfight.generated.LangKeys.*;
 
-@EventBusSubscriber(modid = EpicFightMod.MODID, value = Dist.CLIENT)
 public class ClientConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
@@ -198,10 +193,8 @@ public class ClientConfig {
     public static int chargingBarY;
     public static HorizontalBasis chargingBarBaseX;
     public static VerticalBasis chargingBarBaseY;
-
-    @SubscribeEvent
-    static void epicfight$modConfigLoading(final ModConfigEvent.Loading event) {
-        if (event.getConfig().getType() != ModConfig.Type.CLIENT) {
+    public static void epicfight$modConfigLoading(final ModConfig config) {
+        if (config.getType() != ModConfig.Type.CLIENT) {
             return;
         }
 
@@ -260,7 +253,7 @@ public class ClientConfig {
         chargingBarBaseX = CHARGING_BAR_BASE_X.get();
         chargingBarBaseY = CHARGING_BAR_BASE_Y.get();
 
-        if (EpicFightServerConnectionHelper.init(event.getConfig().getFullPath().getParent().toString())) {
+        if (EpicFightServerConnectionHelper.init(config.getFullPath().getParent().toString())) {
             EpicFightMod.LOGGER.info("Epic Fight web server connection helper: supported");
 
             try {

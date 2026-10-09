@@ -4,8 +4,8 @@ import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import yesman.epicfight.platform.registry.DeferredHolder;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.data.conditions.Condition;
 import yesman.epicfight.data.conditions.entity.HealthPoint;
 import yesman.epicfight.data.conditions.entity.OffhandItemCategory;
