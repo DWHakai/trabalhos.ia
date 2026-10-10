@@ -26,7 +26,7 @@ import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
 import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -1041,7 +1041,7 @@ public class ControlEngine implements IEventBasedEngine {
             if (
                 !EpicFightGameRules.ALLOW_VANILLA_MELEE.getRuleValue(playerpatch.getOriginal().level()) &&
                     this.minecraft.hitResult instanceof EntityHitResult entityHitResult &&
-                    (entityHitResult.getEntity() instanceof LivingEntity || entityHitResult.getEntity() instanceof PartEntity)
+                    (entityHitResult.getEntity() instanceof LivingEntity || entityHitResult.getEntity() instanceof EnderDragonPart)
             ) {
                 event.setSwingHand(false);
                 event.setCanceled(true);

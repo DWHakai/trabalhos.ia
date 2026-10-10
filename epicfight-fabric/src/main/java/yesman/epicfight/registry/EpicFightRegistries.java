@@ -40,7 +40,6 @@ public abstract class EpicFightRegistries {
     // Deferred Registries
     public static final List<DeferredRegister<?>> DEFERRED_REGISTRIES = List.of(
         EpicFightArmorMaterials.REGISTRY,
-        EpicFightAttachmentTypes.REGISTRY,
         EpicFightAttributes.REGISTRY,
         EpicFightBlockEntities.REGISTRY,
         EpicFightBlocks.REGISTRY,

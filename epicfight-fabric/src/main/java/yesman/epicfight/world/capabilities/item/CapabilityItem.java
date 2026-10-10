@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.fml.ModList;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.EpicFight;
@@ -734,7 +734,7 @@ public class CapabilityItem {
 
 		public <R> T setCustomData(DeferredCustomData<? extends CustomData<R>> customData, R data) {
 			String modId = customData.getId().getNamespace();
-			if (!ModList.get().isLoaded(modId)) return (T) this;
+			if (!FabricLoader.getInstance().isModLoaded(modId)) return (T) this;
             this.setCustomDataInternal(customData, data);
 			return (T)this;
 		}

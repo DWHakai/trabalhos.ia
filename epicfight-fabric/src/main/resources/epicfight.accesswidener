@@ -1,129 +1,129 @@
 accessWidener v2 named
 
 accessible method com/mojang/blaze3d/vertex/VertexFormat <init> (Ljava/util/List;Ljava/util/List;Lit/unimi/dsi/fastutil/ints/IntList;I)V
-# TODO descriptor: accessible field net/minecraft/client/Camera eyeHeight ?
-# TODO descriptor: accessible field net/minecraft/client/Camera eyeHeightOld ?
+accessible field net/minecraft/client/Camera eyeHeight F
+accessible field net/minecraft/client/Camera eyeHeightOld F
 accessible method net/minecraft/client/Camera getMaxZoom (F)F
 accessible method net/minecraft/client/Camera move (FFF)V
 accessible method net/minecraft/client/Camera setPosition (DDD)V
 accessible method net/minecraft/client/Camera setRotation (FF)V
-# TODO descriptor: accessible field net/minecraft/client/DeltaTracker$Timer deltaTickResidual ?
+accessible field net/minecraft/client/DeltaTracker$Timer deltaTickResidual F
 accessible method net/minecraft/client/KeyboardHandler debugFeedbackTranslated (Ljava/lang/String;[Ljava/lang/Object;)V
 accessible method net/minecraft/client/Minecraft startAttack ()Z
-# TODO descriptor: accessible field net/minecraft/client/gui/Gui CROSSHAIR_SPRITE ?
-# TODO descriptor: accessible field net/minecraft/client/gui/GuiGraphics scissorStack ?
+accessible field net/minecraft/client/gui/Gui CROSSHAIR_SPRITE Lnet/minecraft/resources/ResourceLocation;
+accessible field net/minecraft/client/gui/GuiGraphics scissorStack Lnet/minecraft/client/gui/GuiGraphics$ScissorStack;
 accessible method net/minecraft/client/gui/GuiGraphics innerBlit (Lnet/minecraft/resources/ResourceLocation;IIIIIFFFFFFFF)V
 accessible class net/minecraft/client/gui/GuiGraphics$ScissorStack
-# TODO descriptor: accessible field net/minecraft/client/gui/GuiGraphics$ScissorStack stack ?
-# TODO descriptor: accessible field net/minecraft/client/gui/components/AbstractSelectionList itemHeight ?
-# TODO descriptor: mutable field net/minecraft/client/gui/components/AbstractSelectionList itemHeight ?
+accessible field net/minecraft/client/gui/GuiGraphics$ScissorStack stack Ljava/util/Deque;
+accessible field net/minecraft/client/gui/components/AbstractSelectionList itemHeight I
+mutable field net/minecraft/client/gui/components/AbstractSelectionList itemHeight I
 extendable method net/minecraft/client/gui/components/AbstractSelectionList getEntryAtPosition (DD)Lnet/minecraft/client/gui/components/AbstractSelectionList$Entry;
-# TODO descriptor: accessible field net/minecraft/client/gui/components/AbstractSelectionList scrolling ?
+accessible field net/minecraft/client/gui/components/AbstractSelectionList scrolling Z
 accessible method net/minecraft/client/gui/components/AbstractSliderButton setValue (D)V
-# TODO descriptor: accessible field net/minecraft/client/gui/components/EditBox responder ?
-# TODO descriptor: accessible field net/minecraft/client/gui/screens/Screen INWORLD_MENU_BACKGROUND ?
-# TODO descriptor: accessible field net/minecraft/client/gui/screens/Screen initialized ?
-# TODO descriptor: accessible field net/minecraft/client/model/geom/ModelPart cubes ?
-# TODO descriptor: accessible field net/minecraft/client/model/geom/ModelPart children ?
-# TODO descriptor: accessible field net/minecraft/client/gui/components/ContainerObjectSelectionList$Entry focused ?
-# TODO descriptor: accessible field net/minecraft/client/model/geom/ModelPart$Cube polygons ?
-# TODO descriptor: mutable field net/minecraft/client/model/geom/ModelPart$Cube polygons ?
-# TODO descriptor: accessible field net/minecraft/client/model/geom/ModelPart$Polygon normal ?
-# TODO descriptor: mutable field net/minecraft/client/model/geom/ModelPart$Polygon normal ?
-# TODO descriptor: accessible field net/minecraft/client/model/geom/ModelPart$Polygon vertices ?
-# TODO descriptor: mutable field net/minecraft/client/model/geom/ModelPart$Polygon vertices ?
+accessible field net/minecraft/client/gui/components/EditBox responder Ljava/util/function/Consumer;
+accessible field net/minecraft/client/gui/screens/Screen INWORLD_MENU_BACKGROUND Lnet/minecraft/resources/ResourceLocation;
+accessible field net/minecraft/client/gui/screens/Screen initialized Z
+accessible field net/minecraft/client/model/geom/ModelPart cubes Ljava/util/List;
+accessible field net/minecraft/client/model/geom/ModelPart children Ljava/util/Map;
+accessible field net/minecraft/client/gui/components/ContainerObjectSelectionList$Entry focused Lnet/minecraft/client/gui/components/events/GuiEventListener;
+accessible field net/minecraft/client/model/geom/ModelPart$Cube polygons [Lnet/minecraft/client/model/geom/ModelPart$Polygon;
+mutable field net/minecraft/client/model/geom/ModelPart$Cube polygons [Lnet/minecraft/client/model/geom/ModelPart$Polygon;
+accessible field net/minecraft/client/model/geom/ModelPart$Polygon normal Lorg/joml/Vector3f;
+mutable field net/minecraft/client/model/geom/ModelPart$Polygon normal Lorg/joml/Vector3f;
+accessible field net/minecraft/client/model/geom/ModelPart$Polygon vertices [Lnet/minecraft/client/model/geom/ModelPart$Vertex;
+mutable field net/minecraft/client/model/geom/ModelPart$Polygon vertices [Lnet/minecraft/client/model/geom/ModelPart$Vertex;
 accessible class net/minecraft/client/model/geom/ModelPart$Polygon
 accessible class net/minecraft/client/model/geom/ModelPart$Vertex
-# TODO descriptor: accessible field net/minecraft/client/multiplayer/ClientLevel connection ?
+accessible field net/minecraft/client/multiplayer/ClientLevel connection Lnet/minecraft/client/multiplayer/ClientPacketListener;
 accessible method net/minecraft/client/multiplayer/MultiPlayerGameMode performUseItemOn (Lnet/minecraft/client/player/LocalPlayer;Lnet/minecraft/world/InteractionHand;Lnet/minecraft/world/phys/BlockHitResult;)Lnet/minecraft/world/InteractionResult;
-# TODO descriptor: accessible field net/minecraft/client/particle/Particle alpha ?
-# TODO descriptor: accessible field net/minecraft/client/player/LocalPlayer sprintTriggerTime ?
+accessible field net/minecraft/client/particle/Particle alpha F
+accessible field net/minecraft/client/player/LocalPlayer sprintTriggerTime I
 accessible method net/minecraft/client/renderer/GameRenderer getFov (Lnet/minecraft/client/Camera;FZ)D
-# TODO descriptor: accessible field net/minecraft/client/renderer/LightTexture lightTexture ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/OutlineBufferSource teamR ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/OutlineBufferSource teamG ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/OutlineBufferSource teamB ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/OutlineBufferSource teamA ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/block/model/ItemOverrides overrides ?
-# TODO descriptor: mutable field net/minecraft/client/renderer/block/model/ItemOverrides overrides ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/block/model/ItemOverrides properties ?
-# TODO descriptor: mutable field net/minecraft/client/renderer/block/model/ItemOverrides properties ?
+accessible field net/minecraft/client/renderer/LightTexture lightTexture Lnet/minecraft/client/renderer/texture/DynamicTexture;
+accessible field net/minecraft/client/renderer/OutlineBufferSource teamR I
+accessible field net/minecraft/client/renderer/OutlineBufferSource teamG I
+accessible field net/minecraft/client/renderer/OutlineBufferSource teamB I
+accessible field net/minecraft/client/renderer/OutlineBufferSource teamA I
+accessible field net/minecraft/client/renderer/block/model/ItemOverrides overrides [Lnet/minecraft/client/renderer/block/model/ItemOverrides$BakedOverride;
+mutable field net/minecraft/client/renderer/block/model/ItemOverrides overrides [Lnet/minecraft/client/renderer/block/model/ItemOverrides$BakedOverride;
+accessible field net/minecraft/client/renderer/block/model/ItemOverrides properties [Lnet/minecraft/resources/ResourceLocation;
+mutable field net/minecraft/client/renderer/block/model/ItemOverrides properties [Lnet/minecraft/resources/ResourceLocation;
 accessible method net/minecraft/client/renderer/block/model/ItemOverrides$BakedOverride <init> ([Lnet/minecraft/client/renderer/block/model/ItemOverrides$PropertyMatcher;Lnet/minecraft/client/resources/model/BakedModel;)V
 accessible method net/minecraft/client/renderer/block/model/ItemOverrides$PropertyMatcher <init> (IF)V
 accessible class net/minecraft/client/renderer/block/model/ItemOverrides$PropertyMatcher
-# TODO descriptor: accessible field net/minecraft/client/renderer/entity/EntityRenderDispatcher renderers ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/entity/EntityRenderDispatcher playerRenderers ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/entity/LivingEntityRenderer layers ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/entity/layers/ElytraLayer elytraModel ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer ARMOR_LOCATION_CACHE ?
+accessible field net/minecraft/client/renderer/entity/EntityRenderDispatcher renderers Ljava/util/Map;
+accessible field net/minecraft/client/renderer/entity/EntityRenderDispatcher playerRenderers Ljava/util/Map;
+accessible field net/minecraft/client/renderer/entity/LivingEntityRenderer layers Ljava/util/List;
+accessible field net/minecraft/client/renderer/entity/layers/ElytraLayer elytraModel Lnet/minecraft/client/model/ElytraModel;
+accessible field net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer ARMOR_LOCATION_CACHE Ljava/util/Map;
 accessible method net/minecraft/client/renderer/entity/layers/HumanoidArmorLayer getArmorModel (Lnet/minecraft/world/entity/EquipmentSlot;)Lnet/minecraft/client/model/HumanoidModel;
-# TODO descriptor: accessible field net/minecraft/client/renderer/entity/layers/VillagerProfessionLayer typeHatCache ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/entity/layers/VillagerProfessionLayer professionHatCache ?
+accessible field net/minecraft/client/renderer/entity/layers/VillagerProfessionLayer typeHatCache Lit/unimi/dsi/fastutil/objects/Object2ObjectMap;
+accessible field net/minecraft/client/renderer/entity/layers/VillagerProfessionLayer professionHatCache Lit/unimi/dsi/fastutil/objects/Object2ObjectMap;
 accessible method net/minecraft/client/renderer/entity/layers/VillagerProfessionLayer getResourceLocation (Ljava/lang/String;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/resources/ResourceLocation;
 accessible method net/minecraft/client/renderer/entity/player/PlayerRenderer setModelProperties (Lnet/minecraft/client/player/AbstractClientPlayer;)V
 accessible method net/minecraft/client/renderer/ItemInHandRenderer renderMap (Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;ILnet/minecraft/world/item/ItemStack;)V
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderStateShard$ShaderStateShard shader ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard blur ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard mipmap ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard texture ?
+accessible field net/minecraft/client/renderer/RenderStateShard$ShaderStateShard shader Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard blur Z
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard mipmap Z
+accessible field net/minecraft/client/renderer/RenderStateShard$TextureStateShard texture Ljava/util/Optional;
 accessible class net/minecraft/client/renderer/RenderType$CompositeState
 extendable class net/minecraft/client/renderer/RenderType$CompositeState
 accessible method net/minecraft/client/renderer/RenderType$CompositeState <init> (Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;Lnet/minecraft/client/renderer/RenderType$OutlineProperty;)V
 accessible class net/minecraft/client/renderer/RenderType$CompositeRenderType
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType outline ?
-# TODO descriptor: mutable field net/minecraft/client/renderer/RenderType$CompositeRenderType outline ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType state ?
+accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType outline Ljava/util/Optional;
+mutable field net/minecraft/client/renderer/RenderType$CompositeRenderType outline Ljava/util/Optional;
+accessible field net/minecraft/client/renderer/RenderType$CompositeRenderType state Lnet/minecraft/client/renderer/RenderType$CompositeState;
 accessible method net/minecraft/client/renderer/RenderType$CompositeRenderType <init> (Ljava/lang/String;Lcom/mojang/blaze3d/vertex/VertexFormat;Lcom/mojang/blaze3d/vertex/VertexFormat$Mode;IZZLnet/minecraft/client/renderer/RenderType$CompositeState;)V
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState textureState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState shaderState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState transparencyState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState depthTestState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState cullState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState lightmapState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState overlayState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState layeringState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState outputState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState texturingState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState writeMaskState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState lineState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState colorLogicState ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState outlineProperty ?
-# TODO descriptor: accessible field net/minecraft/client/renderer/RenderType$CompositeState states ?
-# TODO descriptor: mutable field net/minecraft/client/renderer/RenderType$CompositeState states ?
+accessible field net/minecraft/client/renderer/RenderType$CompositeState textureState Lnet/minecraft/client/renderer/RenderStateShard$EmptyTextureStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState shaderState Lnet/minecraft/client/renderer/RenderStateShard$ShaderStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState transparencyState Lnet/minecraft/client/renderer/RenderStateShard$TransparencyStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState depthTestState Lnet/minecraft/client/renderer/RenderStateShard$DepthTestStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState cullState Lnet/minecraft/client/renderer/RenderStateShard$CullStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState lightmapState Lnet/minecraft/client/renderer/RenderStateShard$LightmapStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState overlayState Lnet/minecraft/client/renderer/RenderStateShard$OverlayStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState layeringState Lnet/minecraft/client/renderer/RenderStateShard$LayeringStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState outputState Lnet/minecraft/client/renderer/RenderStateShard$OutputStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState texturingState Lnet/minecraft/client/renderer/RenderStateShard$TexturingStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState writeMaskState Lnet/minecraft/client/renderer/RenderStateShard$WriteMaskStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState lineState Lnet/minecraft/client/renderer/RenderStateShard$LineStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState colorLogicState Lnet/minecraft/client/renderer/RenderStateShard$ColorLogicStateShard;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState outlineProperty Lnet/minecraft/client/renderer/RenderType$OutlineProperty;
+accessible field net/minecraft/client/renderer/RenderType$CompositeState states Lcom/google/common/collect/ImmutableList;
+mutable field net/minecraft/client/renderer/RenderType$CompositeState states Lcom/google/common/collect/ImmutableList;
 accessible class net/minecraft/client/renderer/RenderType$OutlineProperty
-# TODO descriptor: accessible field net/minecraft/nbt/CompoundTag tags ?
-# TODO descriptor: accessible field net/minecraft/server/packs/repository/FolderRepositorySource DISCOVERED_PACK_SELECTION_CONFIG ?
+accessible field net/minecraft/nbt/CompoundTag tags Ljava/util/Map;
+accessible field net/minecraft/server/packs/repository/FolderRepositorySource DISCOVERED_PACK_SELECTION_CONFIG Lnet/minecraft/server/packs/PackSelectionConfig;
 accessible method net/minecraft/server/packs/repository/FolderRepositorySource createDiscoveredFilePackInfo (Ljava/nio/file/Path;)V
 accessible class net/minecraft/server/packs/repository/FolderRepositorySource$FolderPackDetector
 accessible method net/minecraft/server/packs/repository/FolderRepositorySource$FolderPackDetector <init> (Lnet/minecraft/world/level/validation/DirectoryValidator;)V
-# TODO descriptor: accessible field net/minecraft/world/damagesource/CombatTracker mob ?
-# TODO descriptor: accessible field net/minecraft/world/entity/AreaEffectCloud victims ?
-# TODO descriptor: accessible field net/minecraft/world/entity/ai/Brain availableBehaviorsByPriority ?
-# TODO descriptor: accessible field net/minecraft/world/entity/ai/attributes/AttributeMap supplier ?
-# TODO descriptor: mutable field net/minecraft/world/entity/ai/attributes/AttributeMap supplier ?
-# TODO descriptor: accessible field net/minecraft/world/entity/ai/attributes/AttributeSupplier instances ?
-# TODO descriptor: accessible field net/minecraft/world/entity/ai/goal/target/NearestAttackableTargetGoal targetType ?
-# TODO descriptor: accessible field net/minecraft/world/entity/ai/goal/target/NearestAttackableTargetGoal targetConditions ?
-# TODO descriptor: accessible field net/minecraft/world/entity/boss/enderdragon/EnderDragon growlTime ?
-# TODO descriptor: accessible field net/minecraft/world/entity/boss/enderdragon/EnderDragon phaseManager ?
-# TODO descriptor: mutable field net/minecraft/world/entity/boss/enderdragon/EnderDragon phaseManager ?
+accessible field net/minecraft/world/damagesource/CombatTracker mob Lnet/minecraft/world/entity/LivingEntity;
+accessible field net/minecraft/world/entity/AreaEffectCloud victims Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/Brain availableBehaviorsByPriority Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/attributes/AttributeMap supplier Lnet/minecraft/world/entity/ai/attributes/AttributeSupplier;
+mutable field net/minecraft/world/entity/ai/attributes/AttributeMap supplier Lnet/minecraft/world/entity/ai/attributes/AttributeSupplier;
+accessible field net/minecraft/world/entity/ai/attributes/AttributeSupplier instances Ljava/util/Map;
+accessible field net/minecraft/world/entity/ai/goal/target/NearestAttackableTargetGoal targetType Ljava/lang/Class;
+accessible field net/minecraft/world/entity/ai/goal/target/NearestAttackableTargetGoal targetConditions Lnet/minecraft/world/entity/ai/targeting/TargetingConditions;
+accessible field net/minecraft/world/entity/boss/enderdragon/EnderDragon growlTime I
+accessible field net/minecraft/world/entity/boss/enderdragon/EnderDragon phaseManager Lnet/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhaseManager;
+mutable field net/minecraft/world/entity/boss/enderdragon/EnderDragon phaseManager Lnet/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhaseManager;
 accessible method net/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhase create (Ljava/lang/Class;Ljava/lang/String;)Lnet/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhase;
-# TODO descriptor: accessible field net/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhaseManager dragon ?
-# TODO descriptor: accessible field net/minecraft/world/entity/boss/wither/WitherBoss TARGETING_CONDITIONS ?
-# TODO descriptor: accessible field net/minecraft/world/entity/projectile/AbstractArrow inGround ?
-# TODO descriptor: accessible field net/minecraft/world/entity/Entity dimensions ?
+accessible field net/minecraft/world/entity/boss/enderdragon/phases/EnderDragonPhaseManager dragon Lnet/minecraft/world/entity/boss/enderdragon/EnderDragon;
+accessible field net/minecraft/world/entity/boss/wither/WitherBoss TARGETING_CONDITIONS Lnet/minecraft/world/entity/ai/targeting/TargetingConditions;
+accessible field net/minecraft/world/entity/projectile/AbstractArrow inGround Z
+accessible field net/minecraft/world/entity/Entity dimensions Lnet/minecraft/world/entity/EntityDimensions;
 accessible method net/minecraft/world/entity/Entity getInputVector (Lnet/minecraft/world/phys/Vec3;FF)Lnet/minecraft/world/phys/Vec3;
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity attackStrengthTicker ?
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity lastHurt ?
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity lerpSteps ?
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity lerpX ?
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity lerpY ?
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity lerpZ ?
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity lerpYRot ?
-# TODO descriptor: accessible field net/minecraft/world/entity/LivingEntity noJumpDelay ?
-# TODO descriptor: accessible field net/minecraft/world/entity/monster/EnderMan DATA_CREEPY ?
+accessible field net/minecraft/world/entity/LivingEntity attackStrengthTicker I
+accessible field net/minecraft/world/entity/LivingEntity lastHurt F
+accessible field net/minecraft/world/entity/LivingEntity lerpSteps I
+accessible field net/minecraft/world/entity/LivingEntity lerpX D
+accessible field net/minecraft/world/entity/LivingEntity lerpY D
+accessible field net/minecraft/world/entity/LivingEntity lerpZ D
+accessible field net/minecraft/world/entity/LivingEntity lerpYRot D
+accessible field net/minecraft/world/entity/LivingEntity noJumpDelay I
+accessible field net/minecraft/world/entity/monster/EnderMan DATA_CREEPY Lnet/minecraft/network/syncher/EntityDataAccessor;
 accessible method net/minecraft/world/entity/monster/EnderMan teleport ()Z
 accessible method net/minecraft/world/entity/projectile/AbstractArrow setPierceLevel (B)V
-# TODO descriptor: accessible field net/minecraft/world/entity/projectile/ThrownTrident dealtDamage ?
+accessible field net/minecraft/world/entity/projectile/ThrownTrident dealtDamage Z
 accessible method net/minecraft/world/item/ItemStack <init> (Ljava/lang/Void;)V
-# TODO descriptor: accessible field net/minecraft/world/level/dimension/end/EndDragonFight dragonEvent ?
+accessible field net/minecraft/world/level/dimension/end/EndDragonFight dragonEvent Lnet/minecraft/server/level/ServerBossEvent;

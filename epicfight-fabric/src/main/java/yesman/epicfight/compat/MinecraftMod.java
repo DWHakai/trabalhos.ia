@@ -1,42 +1,16 @@
 package yesman.epicfight.compat;
 
-import net.neoforged.fml.ModList;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.EpicFight;
-import yesman.epicfight.compat.azurelib.AzureLibArmorCompat;
-import yesman.epicfight.compat.azurelib.AzureLibCompat;
-import yesman.epicfight.compat.betterthirdperson.BetterThirdPersonCompat;
-import yesman.epicfight.compat.curiosapi.CuriosCompat;
-import yesman.epicfight.compat.fgm.WildfireFGMCompat;
-import yesman.epicfight.compat.firstperson.FirstPersonCompat;
-import yesman.epicfight.compat.geckolib.GeckolibCompat;
-import yesman.epicfight.compat.iris.IRISCompat;
-import yesman.epicfight.compat.playeranimator.PlayerAnimatorCompat;
-import yesman.epicfight.compat.playerrevive.PlayerReviveCompat;
-import yesman.epicfight.compat.simplytooltips.SimplyTooltipsModule;
-import yesman.epicfight.compat.skinlayer3d.SkinLayer3DCompat;
-import yesman.epicfight.compat.vampirism.VampirismCompat;
-import yesman.epicfight.compat.werewolves.WerewolvesCompat;
 
 // List of mods with custom compatibility modules.
 // Only includes mods requiring manual registration via ICompatModule.
 // Mods with official API entry-points (e.g., Shoulder Surfing, Controlify, JEI, KubeJS) are excluded.
 public enum MinecraftMod {
-    VAMPIRISM("vampirism", false, VampirismCompat.class),
-    WEREWOLVES("werewolves", false, WerewolvesCompat.class),
-    CURIOS_API("curios", false, CuriosCompat.class),
-    GECKO_LIB("geckolib", true, GeckolibCompat.class),
-    AZURE_LIB("azurelib", true, AzureLibCompat.class),
-    AZURE_LIB_ARMOR("azurelibarmor", true, AzureLibArmorCompat.class),
-    FIRST_PERSON("firstperson", true, FirstPersonCompat.class),
-    SKIN_LAYERS_3D("skinlayers3d", true, SkinLayer3DCompat.class),
-    IRIS("iris", true, IRISCompat.class),
-    PLAYER_ANIMATOR("playeranimator", true, PlayerAnimatorCompat.class),
-    BETTER_THIRD_PERSON("betterthirdperson", true, BetterThirdPersonCompat.class),
-    PLAYER_REVIVE("playerrevive", true, PlayerReviveCompat.class),
-    WILDFIRES_GENDER_MOD("wildfire_gender", true, WildfireFGMCompat.class),
-    SIMPLY_TOOLTIPS("simplytooltips", true, SimplyTooltipsModule.class);
+    // Fabric port: only the integrations whose mods exist on Fabric are listed (see PORTING.md).
+    ;
 
     private final @NotNull String modId;
     private final boolean isClientOnly;
@@ -57,7 +31,7 @@ public enum MinecraftMod {
     }
 
     public String versionString() {
-        return ModList.get().getModFileById(modId).versionString();
+        return FabricLoader.getInstance().getModContainer(modId).map(container -> container.getMetadata().getVersion().getFriendlyString()).orElse("");
     }
 
     // https://semver.org

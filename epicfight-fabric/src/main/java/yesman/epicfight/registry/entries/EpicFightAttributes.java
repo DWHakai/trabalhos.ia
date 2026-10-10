@@ -10,10 +10,8 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.RangedAttribute;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.entity.monster.AbstractSkeleton;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import yesman.epicfight.platform.event.EntityAttributeModificationEvent;
 import yesman.epicfight.platform.registry.DeferredHolder;
 import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.EpicFight;
@@ -84,19 +82,22 @@ public final class EpicFightAttributes {
 		return new AttributeModifier(ATTACK_SPEED_MODIFIER, value, AttributeModifier.Operation.ADD_VALUE);
 	}
 	
-	@EventBusSubscriber(modid = EpicFightMod.MODID)
+	/// Upstream: NeoForge EntityAttributeCreationEvent / EntityAttributeModificationEvent listeners.
+	/// Called from the Fabric entrypoint after the registries are filled.
 	public static final class EventBus {
 		private EventBus() {}
 		
-		@SubscribeEvent
-		public static void entityAttributeCreationEvent(EntityAttributeCreationEvent event) {
-			event.put(EpicFightEntityTypes.WITHER_SKELETON_MINION.get(), AbstractSkeleton.createAttributes().build());
-			event.put(EpicFightEntityTypes.WITHER_GHOST_CLONE.get(), WitherGhostClone.createAttributes().build());
-			event.put(EpicFightEntityTypes.DODGE_LOCATION_INDICATOR.get(), LivingEntity.createLivingAttributes().build());
+		public static void registerAttributes() {
+			FabricDefaultAttributeRegistry.register(EpicFightEntityTypes.WITHER_SKELETON_MINION.get(), AbstractSkeleton.createAttributes());
+			FabricDefaultAttributeRegistry.register(EpicFightEntityTypes.WITHER_GHOST_CLONE.get(), WitherGhostClone.createAttributes());
+			FabricDefaultAttributeRegistry.register(EpicFightEntityTypes.DODGE_LOCATION_INDICATOR.get(), LivingEntity.createLivingAttributes());
+
+			EntityAttributeModificationEvent event = new EntityAttributeModificationEvent();
+			entityAttributeModificationEvent(event);
+			event.apply();
 		}
-		
-		@SubscribeEvent
-		public static void entityAttributeModificationEvent(EntityAttributeModificationEvent event) {
+
+		private static void entityAttributeModificationEvent(EntityAttributeModificationEvent event) {
 			common(EntityType.CAVE_SPIDER, event);
 			common(EntityType.EVOKER, event);
 			common(EntityType.IRON_GOLEM, event);

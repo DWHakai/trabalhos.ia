@@ -21,12 +21,11 @@ import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.SwordItem;
-import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import yesman.epicfight.registry.deferred.holders.DeferredPreset;
 import yesman.epicfight.registry.entries.EpicFightItemCapabilityPresets;
 import yesman.epicfight.world.capabilities.item.*;
 
-public final class CommonItemCapabilityProvider implements ICapabilityProvider<ItemStack, Void, CapabilityItem> {
+public final class CommonItemCapabilityProvider {
 	public static final CommonItemCapabilityProvider INSTANCE = new CommonItemCapabilityProvider();
 	
 	private CommonItemCapabilityProvider() {}
@@ -119,7 +118,6 @@ public final class CommonItemCapabilityProvider implements ICapabilityProvider<I
 		});
 	}
 	
-	@Override
 	public @Nullable CapabilityItem getCapability(ItemStack itemstack, Void context) {
 		if (this.capabilities.containsKey(itemstack.getItem())) {
 			CapabilityItem itemCapability = this.capabilities.get(itemstack.getItem());

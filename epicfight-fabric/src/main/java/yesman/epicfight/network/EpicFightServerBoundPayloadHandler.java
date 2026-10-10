@@ -4,7 +4,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
 import yesman.epicfight.api.animation.AnimationManager;
 import yesman.epicfight.network.client.CPAnimatorControl;
 import yesman.epicfight.network.client.CPChangePlayerMode;

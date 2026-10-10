@@ -1,5 +1,7 @@
 plugins {
-    id "fabric-loom" version "1.10-SNAPSHOT"
+    id "fabric-loom" version "1.14.10"
+    // Same as upstream: generates yesman.epicfight.generated.LangKeys/SoundKeys from the lang and sounds files
+    id "dev.echoellet.mc-safe-resources" version "0.0.2"
 }
 
 version = project.mod_version
@@ -15,6 +17,14 @@ java {
 }
 
 repositories {
+    exclusiveContent {
+        forRepository { maven { name = "Modrinth"; url = "https://api.modrinth.com/maven" } }
+        filter { includeGroup "maven.modrinth" }
+    }
+    exclusiveContent {
+        forRepository { maven { name = "IsXander"; url = "https://maven.isxander.dev/releases" } }
+        filter { includeGroup "dev.isxander" }
+    }
     maven { name = "ParchmentMC"; url = "https://maven.parchmentmc.org" }
     maven {
         name = "Fuzs Mod Resources (Forge Config API Port)"
@@ -40,6 +50,14 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
     include "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
+    // Optional integrations (Fabric builds of the same mods upstream compiles against)
+    modCompileOnly "maven.modrinth:iris:${project.iris_version}"
+    modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
+    modCompileOnly("dev.isxander:controlify:${project.controlify_version}") { transitive = false }
+
+    // javax.annotation (@Nullable etc.), shipped by NeoForge but not by Fabric
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+    compileOnly "org.checkerframework:checker-qual:3.48.3"
 }
 
 // ---------------------------------------------------------------------------
@@ -84,7 +102,7 @@ tasks.register("fetchUpstreamResources") {
             git(["init", "-q"])
             git(["remote", "add", "origin", repo])
         }
-        git(["fetch", "-q", "--depth", "1", "--filter=blob:none", "origin", commit])
+        git(["fetch", "-q", "--depth", "1", "origin", commit])
         git(["checkout", "-q", "FETCH_HEAD", "--", "src/main/resources", "src/generated/resources"])
     }
 }
@@ -109,6 +127,28 @@ tasks.register("syncUpstreamResources", Sync) {
 
 sourceSets.main.resources.srcDir(tasks.named("syncUpstreamResources"))
 
+// yesman.epicfight.generated.LangKeys / SoundKeys, generated like upstream but from the fetched files
+mcSafeResources {
+    namespace = project.mod_id
+    outputPackage = "yesman.${project.mod_id}.generated"
+}
+
+tasks.named("generateLangKeys") {
+    dependsOn "fetchUpstreamResources"
+    inputResourceFile = upstreamDir.map { it.file("src/main/resources/assets/${project.mod_id}/lang/en_us.json") }
+}
+
+tasks.named("generateSoundKeys") {
+    dependsOn "fetchUpstreamResources"
+    inputResourceFile = upstreamDir.map { it.file("src/main/resources/assets/${project.mod_id}/sounds.json") }
+}
+
+sourceSets.main.java.srcDirs(
+    tasks.named("generateLangKeys").map { it.outputs.files.singleFile },
+    tasks.named("generateSoundKeys").map { it.outputs.files.singleFile }
+)
+tasks.named("compileJava") { dependsOn "generateLangKeys", "generateSoundKeys" }
+
 processResources {
     def props = [version: project.version, loader_version: project.loader_version,
                  minecraft_version: project.minecraft_version,
@@ -120,6 +160,7 @@ processResources {
 tasks.withType(JavaCompile).configureEach {
     it.options.release = 21
     it.options.encoding = "UTF-8"
+    it.options.compilerArgs += ["-Xmaxerrs", "5000"]
 }
 
 jar {

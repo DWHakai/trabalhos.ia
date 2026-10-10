@@ -11,7 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Pose;
@@ -93,8 +93,8 @@ public abstract class MultiCollider<T extends Collider> extends Collider {
 				return false;
 			}
 			
-			if (entity instanceof PartEntity) {
-				if (((PartEntity<?>)entity).getParent().is(entitypatch.getOriginal())) {
+			if (entity instanceof EnderDragonPart) {
+				if (((EnderDragonPart)entity).parentMob.is(entitypatch.getOriginal())) {
 					return false;
 				}
 			}

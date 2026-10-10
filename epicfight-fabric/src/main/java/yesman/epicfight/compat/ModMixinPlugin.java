@@ -1,6 +1,6 @@
 package yesman.epicfight.compat;
 
-import net.neoforged.fml.loading.LoadingModList;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.objectweb.asm.tree.ClassNode;
@@ -14,8 +14,6 @@ import java.util.Set;
 ///
 /// Maintainers: Do not reference any game or Epic Fight classes here.
 /// This runs during early game loading.
-/// [LoadingModList] is used because the mod loader is already initialized and is loading all mods,
-/// including Epic Fight.
 ///
 /// @see IMixinConfigPlugin
 @ApiStatus.Internal
@@ -24,7 +22,7 @@ public abstract class ModMixinPlugin implements IMixinConfigPlugin {
     private final boolean isModInstalled;
 
     protected ModMixinPlugin() {
-        isModInstalled = LoadingModList.get().getModFileById(this.getModId()) != null;
+        isModInstalled = FabricLoader.getInstance().isModLoaded(this.getModId());
     }
 
     public abstract @NotNull String getModId();

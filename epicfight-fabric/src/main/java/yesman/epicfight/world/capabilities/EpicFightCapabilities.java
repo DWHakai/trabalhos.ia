@@ -6,7 +6,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.utils.side.ClientOnly;
@@ -25,12 +24,6 @@ import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 public class EpicFightCapabilities {
-	public static final ItemCapability<CapabilityItem, Void> CAPABILITY_ITEM =
-		ItemCapability.createVoid(
-            EpicFightMod.identifier("item_capability"),
-            CapabilityItem.class
-        );
-
 	public static final CommonEntityPatchProvider ENTITY_PATCH_PROVIDER = CommonEntityPatchProvider.INSTANCE;
 	public static final CommonItemCapabilityProvider ITEM_CAPABILITY_PROVIDER = CommonItemCapabilityProvider.INSTANCE;
 
@@ -41,7 +34,8 @@ public class EpicFightCapabilities {
 
     /// Returns [CapabilityItem] from [ItemStack] instance wrapped by [Optional]
 	public static Optional<CapabilityItem> getItemCapability(ItemStack stack) {
-		return Optional.ofNullable(stack.getCapability(CAPABILITY_ITEM));
+		// NeoForge item capability: no capability for empty stacks, otherwise asks the provider
+		return stack.isEmpty() ? Optional.empty() : Optional.ofNullable(ITEM_CAPABILITY_PROVIDER.getCapability(stack, null));
 	}
 
 	/// This method should remain as the secondary option, especially when you can't fix local variables inside lambda expression.
@@ -50,7 +44,7 @@ public class EpicFightCapabilities {
 	/// @param type A class type to cast
 	public static <T extends EntityPatch<?>> T getEntityPatch(@Nullable Entity entity, Class<T> type) {
 		if (entity != null) {
-			AttachmentEntityPatchProvider attachmentEntitypatchProvider = entity.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+			AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(entity);
 			EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
 			if (entitypatch != null && type.isAssignableFrom(entitypatch.getClass())) {
@@ -65,7 +59,7 @@ public class EpicFightCapabilities {
     /// Conducts null checking
     public static @Nullable PlayerPatch<?> getPlayerPatch(@Nullable Player player) {
         if (player != null) {
-            AttachmentEntityPatchProvider attachmentEntitypatchProvider = player.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+            AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(player);
             EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
             if (entitypatch != null && PlayerPatch.class.isAssignableFrom(entitypatch.getClass())) {
@@ -80,7 +74,7 @@ public class EpicFightCapabilities {
     /// Conducts null checking
     public static @Nullable ServerPlayerPatch getServerPlayerPatch(@Nullable ServerPlayer serverPlayer) {
         if (serverPlayer != null) {
-            AttachmentEntityPatchProvider attachmentEntitypatchProvider = serverPlayer.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+            AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(serverPlayer);
             EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
             if (entitypatch != null && ServerPlayerPatch.class.isAssignableFrom(entitypatch.getClass())) {
@@ -95,7 +89,7 @@ public class EpicFightCapabilities {
     /// Conducts null checking
     public static @Nullable LocalPlayerPatch getLocalPlayerPatch(@Nullable LocalPlayer localPlayer) {
         if (localPlayer != null) {
-            AttachmentEntityPatchProvider attachmentEntitypatchProvider = localPlayer.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+            AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(localPlayer);
             EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
             if (entitypatch != null && LocalPlayerPatch.class.isAssignableFrom(entitypatch.getClass())) {
@@ -114,7 +108,7 @@ public class EpicFightCapabilities {
             return null;
         }
 
-        AttachmentEntityPatchProvider attachmentEntitypatchProvider = Minecraft.getInstance().player.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+        AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(Minecraft.getInstance().player);
         EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
         if (entitypatch instanceof LocalPlayerPatch localplayerpatch) {
@@ -142,7 +136,7 @@ public class EpicFightCapabilities {
 	/// @param type A class type to cast
 	public static <T extends EntityPatch<?>> Optional<T> getUnparameterizedEntityPatch(@Nullable Entity entity, Class<T> type) {
 		if (entity != null) {
-			AttachmentEntityPatchProvider attachmentEntitypatchProvider = entity.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+			AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(entity);
 			EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 			
 			if (entitypatch != null && type.isAssignableFrom(entitypatch.getClass())) {
@@ -162,7 +156,7 @@ public class EpicFightCapabilities {
 	/// @param patchtype    A class type to cast
 	public static <E extends Entity, T extends EntityPatch<E>> Optional<T> getParameterizedEntityPatch(@Nullable Entity entity, Class<E> entitytype, Class<?> patchtype) {
 		if (entity != null && entitytype.isAssignableFrom(entity.getClass())) {
-			AttachmentEntityPatchProvider attachmentEntitypatchProvider = entity.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+			AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(entity);
 			EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 			
 			if (entitypatch != null && patchtype.isAssignableFrom(entitypatch.getClass())) {
@@ -178,7 +172,7 @@ public class EpicFightCapabilities {
     /// @param entity A player to extract the entity patch
     public static Optional<PlayerPatch<?>> getPlayerPatchAsOptional(@Nullable Entity entity) {
         if (entity != null) {
-            AttachmentEntityPatchProvider attachmentEntitypatchProvider = entity.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+            AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(entity);
             EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
             if (entitypatch instanceof PlayerPatch<?> playerpatch) {
@@ -195,7 +189,7 @@ public class EpicFightCapabilities {
     /// @param entity A player to extract the entity patch
     public static Optional<LocalPlayerPatch> getLocalPlayerPatchAsOptional(@Nullable Entity entity) {
         if (entity != null) {
-            AttachmentEntityPatchProvider attachmentEntitypatchProvider = entity.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+            AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(entity);
             EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
             if (entitypatch instanceof LocalPlayerPatch localplayerpatch) {
@@ -212,7 +206,7 @@ public class EpicFightCapabilities {
     /// @param entity A player to extract the entity patch
     public static Optional<ServerPlayerPatch> getServerPlayerPatchAsOptional(@Nullable Entity entity) {
         if (entity != null) {
-            AttachmentEntityPatchProvider attachmentEntitypatchProvider = entity.getData(EpicFightAttachmentTypes.ENTITY_PATCH);
+            AttachmentEntityPatchProvider attachmentEntitypatchProvider = EpicFightAttachmentTypes.getEntityPatchProvider(entity);
             EntityPatch<?> entitypatch = attachmentEntitypatchProvider.getCapability();
 
             if (entitypatch instanceof ServerPlayerPatch serverplayerpatch) {

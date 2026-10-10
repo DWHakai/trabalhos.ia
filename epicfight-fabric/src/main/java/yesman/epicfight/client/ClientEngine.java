@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.neoforged.neoforge.client.ClientHooks;
+
 import net.neoforged.neoforge.common.ModConfigSpec;
 import yesman.epicfight.client.particle.EpicFightParticleRenderTypes;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
@@ -97,7 +97,7 @@ public class ClientEngine {
         return localPlayerPatch.isEpicFightMode();
     }
 
-    /// Copy from [ClientHooks#makeParticleRenderTypeComparator] but prioritize [ParticleRenderType#CUSTOM] lowest since it resets GL parameters setup
+    /// Copy from NeoForge `ClientHooks#makeParticleRenderTypeComparator` but prioritize [ParticleRenderType#CUSTOM] lowest since it resets GL parameters setup
     public static Comparator<ParticleRenderType> makeCustomLowestParticleRenderTypeComparator(List<ParticleRenderType> renderOrder) {
         Comparator<ParticleRenderType> vanillaComparator = Comparator.comparingInt(renderOrder::indexOf);
 

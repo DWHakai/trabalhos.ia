@@ -17,7 +17,7 @@
     "client": ["yesman.epicfight.fabric.client.EpicFightFabricClient"]
   },
   "accessWidener": "epicfight.accesswidener",
-  "mixins": ["epicfight.mixins.json"],
+  "mixins": ["epicfight.mixins.json", "epicfight.fabric.mixins.json"],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "minecraft": "~${minecraft_version}",

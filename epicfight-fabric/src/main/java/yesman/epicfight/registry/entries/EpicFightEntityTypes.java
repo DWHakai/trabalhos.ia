@@ -3,11 +3,7 @@ package yesman.epicfight.registry.entries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.entity.SpawnPlacementTypes;
-import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 import yesman.epicfight.platform.registry.DeferredHolder;
 import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.main.EpicFightMod;
@@ -52,8 +48,4 @@ public final class EpicFightEntityTypes {
 		EntityType.Builder.<DodgeLocationIndicator>of(DodgeLocationIndicator::new, MobCategory.MISC)
 			.sized(0.0F, 0.0F).clientTrackingRange(6).updateInterval(1).noSummon().noSave().build("dodge_left")
 		);
-	
-	public static void registerSpawnPlacementsEvent(final RegisterSpawnPlacementsEvent event) {
-		event.register(WITHER_SKELETON_MINION.get(), SpawnPlacementTypes.ON_GROUND, Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, Monster::checkAnyLightMonsterSpawnRules, RegisterSpawnPlacementsEvent.Operation.OR);
-    }
 }

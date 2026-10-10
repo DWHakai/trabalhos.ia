@@ -1,22 +1,16 @@
 package yesman.epicfight.registry.entries;
 
-import net.neoforged.neoforge.attachment.AttachmentType;
-import yesman.epicfight.platform.registry.DeferredHolder;
-import yesman.epicfight.platform.registry.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import yesman.epicfight.main.EpicFightMod;
+import net.minecraft.world.entity.Entity;
+import yesman.epicfight.fabric.EntityPatchHolder;
 import yesman.epicfight.world.capabilities.provider.AttachmentEntityPatchProvider;
 
+/// Upstream registers a NeoForge data attachment that holds the entity patch. On Fabric the
+/// holder is a field added to [Entity] by `yesman.epicfight.fabric.mixin.MixinEntityPatchHolder`,
+/// created lazily on first access exactly like a non-serialized NeoForge attachment.
 public final class EpicFightAttachmentTypes {
 	private EpicFightAttachmentTypes() {}
-	
-	public static final DeferredRegister<AttachmentType<?>> REGISTRY = DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, EpicFightMod.MODID);
-	
-	public static final DeferredHolder<AttachmentType<?>, AttachmentType<AttachmentEntityPatchProvider>> ENTITY_PATCH = REGISTRY.register(
-            "entitypatch",
-            () ->
-            	AttachmentType
-                    .builder(AttachmentEntityPatchProvider::new)
-                    .build()
-    );
+
+	public static AttachmentEntityPatchProvider getEntityPatchProvider(Entity entity) {
+		return ((EntityPatchHolder)entity).epicfight$getEntityPatchProvider();
+	}
 }

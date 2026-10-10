@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.fml.ModList;
+import net.fabricmc.loader.api.FabricLoader;
 import yesman.epicfight.generated.LangKeys;
 import yesman.epicfight.main.EpicFightMod;
 
@@ -15,7 +15,7 @@ public class VersionNotifier {
 
     public VersionNotifier(Minecraft minecraft) {
         this.minecraft = minecraft;
-        this.visible = ModList.get().getModFileById(EpicFightMod.MODID).versionString().matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+");
+        this.visible = FabricLoader.getInstance().getModContainer(EpicFightMod.MODID).orElseThrow().getMetadata().getVersion().getFriendlyString().matches("[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+");
     }
 
     public void init() {
@@ -37,12 +37,12 @@ public class VersionNotifier {
 
         if (inWorld) {
             String l1 = Component.translatable(LangKeys.GUI_MESSAGE_VERSION_NOTIFIER_TEST_VERSION_WARNING_LINE1).getString();
-            String l2 = Component.translatable(LangKeys.GUI_MESSAGE_VERSION_NOTIFIER_TEST_VERSION_WARNING_LINE2, ModList.get().getModFileById(EpicFightMod.MODID).versionString()).getString();
+            String l2 = Component.translatable(LangKeys.GUI_MESSAGE_VERSION_NOTIFIER_TEST_VERSION_WARNING_LINE2, FabricLoader.getInstance().getModContainer(EpicFightMod.MODID).orElseThrow().getMetadata().getVersion().getFriendlyString()).getString();
 
             guiGraphics.drawString(this.minecraft.font, l1, (width - this.minecraft.font.width(l1) - 2), 8, 16777215);
             guiGraphics.drawString(this.minecraft.font, l2, (width - this.minecraft.font.width(l2) - 2), 20, 16777215);
         } else {
-            String l1 = Component.translatable(LangKeys.GUI_MESSAGE_VERSION_NOTIFIER, ModList.get().getModFileById(EpicFightMod.MODID).versionString()).getString();
+            String l1 = Component.translatable(LangKeys.GUI_MESSAGE_VERSION_NOTIFIER, FabricLoader.getInstance().getModContainer(EpicFightMod.MODID).orElseThrow().getMetadata().getVersion().getFriendlyString()).getString();
             guiGraphics.drawString(this.minecraft.font, l1, (width - this.minecraft.font.width(l1) - 2), 8, 16777215);
         }
     }

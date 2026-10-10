@@ -26,7 +26,6 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.ClientHooks;
 import org.apache.logging.log4j.Logger;
 import org.joml.Matrix4f;
 import yesman.epicfight.api.animation.Pose;
@@ -176,7 +175,7 @@ public class EntitySnapshot<T extends LivingEntityPatch<?>> {
 				
 				if (!bakedmodel.isCustomRenderer()) {
 					MathUtils.mulStack(poseStack, RenderEngine.getInstance().getItemRenderer(itemstack).getCorrectionMatrix(this.entitypatch, items.getFirst(), this.poseMatrices));
-					bakedmodel = ClientHooks.handleCameraTransforms(poseStack, bakedmodel, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND, false);
+					bakedmodel.getTransforms().getTransform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).apply(false, poseStack); // NeoForge ClientHooks#handleCameraTransforms
 					poseStack.translate(-0.5F, -0.5F, -0.5F);
 					
 					for (var model : bakedmodel.getRenderPasses(itemstack, true)) {

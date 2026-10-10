@@ -15,7 +15,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.entity.PartEntity;
+import net.minecraft.world.entity.boss.EnderDragonPart;
 import yesman.epicfight.platform.registry.DeferredHolder;
 import yesman.epicfight.api.animation.AnimationManager.AnimationAccessor;
 import yesman.epicfight.api.animation.AnimationPlayer;
@@ -233,7 +233,7 @@ public class AttackAnimation extends ActionAnimation {
 				LivingEntity trueEntity = this.getTrueEntity(target);
 				
 				if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrentlyAttackTriedEntities().contains(trueEntity) && !entitypatch.isTargetInvulnerable(target)) {
-					if (target instanceof LivingEntity || target instanceof PartEntity) {
+					if (target instanceof LivingEntity || target instanceof EnderDragonPart) {
 						AABB aabb = target.getBoundingBox();
 						
 						if (MathUtils.canBeSeen(target, entity, target.position().distanceTo(entity.getEyePosition()) + aabb.getCenter().distanceTo(new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ)))) {
@@ -269,8 +269,8 @@ public class AttackAnimation extends ActionAnimation {
 	public LivingEntity getTrueEntity(Entity entity) {
 		if (entity instanceof LivingEntity livingEntity) {
 			return livingEntity;
-		} else if (entity instanceof PartEntity<?> partEntity) {
-			Entity parentEntity = partEntity.getParent();
+		} else if (entity instanceof EnderDragonPart partEntity) {
+			Entity parentEntity = partEntity.parentMob;
 			
 			if (parentEntity instanceof LivingEntity livingEntity) {
 				return livingEntity;

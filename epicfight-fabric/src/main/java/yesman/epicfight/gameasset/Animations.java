@@ -28,10 +28,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.CollisionContext;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForgeConfig;
-import net.neoforged.neoforge.event.EventHooks;
+import yesman.epicfight.platform.EventHooks;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import yesman.epicfight.api.animation.*;
@@ -86,7 +83,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-@EventBusSubscriber(modid = EpicFightMod.MODID)
 public class Animations {
     public static DirectStaticAnimation EMPTY_ANIMATION = new DirectStaticAnimation() {
         @Override
@@ -446,7 +442,6 @@ public class Animations {
     public static AnimationAccessor<OffAnimation> OFF_ANIMATION_MIDDLE;
     public static AnimationAccessor<OffAnimation> OFF_ANIMATION_LOWEST;
 
-    @SubscribeEvent
     public static void registerAnimations(AnimationRegistryEvent event) {
         event.newBuilder(EpicFightMod.MODID, Animations::build);
     }
@@ -2418,8 +2413,8 @@ public class Animations {
                 direction = Direction.UP;
             }
 
-            if (NeoForgeConfig.SERVER.fullBoundingBoxLadders.get()) {
-                if (bs.isLadder(level, bp, original)) {
+            if (false) { // NeoForge config "fullBoundingBoxLadders": off by default, absent on Fabric
+                if (bs.is(net.minecraft.tags.BlockTags.CLIMBABLE)) {
                     if (bs.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
                         direction = bs.getValue(BlockStateProperties.HORIZONTAL_FACING);
                     } else {
@@ -2447,7 +2442,7 @@ public class Animations {
                         for (int z2 = mZ; z2 < bb.maxZ; z2++) {
                             BlockPos tmp = new BlockPos(x2, y2, z2);
                             bs = level.getBlockState(tmp);
-                            if (bs.isLadder(level, tmp, original)) {
+                            if (bs.is(net.minecraft.tags.BlockTags.CLIMBABLE)) {
                                 if (bs.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
                                     direction = bs.getValue(BlockStateProperties.HORIZONTAL_FACING);
                                 } else {

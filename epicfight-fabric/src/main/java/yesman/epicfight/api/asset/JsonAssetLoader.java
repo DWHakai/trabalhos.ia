@@ -15,11 +15,9 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.javafmlmod.FMLModContainer;
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import yesman.epicfight.api.animation.*;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.types.ActionAnimation;
@@ -84,22 +82,12 @@ public class JsonAssetLoader {
                 this.rootJson = Streams.parse(jsonReader).getAsJsonObject();
             } catch (NoSuchElementException e) {
                 // In this case, reads the animation data from mod.jar (Especially in a server)
-                ModContainer modContainer = ModList.get().getModContainerById(resourceLocation.getNamespace()).orElseThrow(() -> new AssetLoadingException("No mod Id: " + resourceLocation));
+                ModContainer modContainer = FabricLoader.getInstance().getModContainer(resourceLocation.getNamespace()).orElseThrow(() -> new AssetLoadingException("No mod Id: " + resourceLocation));
                 InputStream inputstream = null;
+                Optional<java.nio.file.Path> assetPath = modContainer.findPath("assets/" + resourceLocation.getNamespace() + "/" + resourceLocation.getPath());
 
-                if (modContainer instanceof FMLModContainer fmlModContainer) {
-                    Field modClassesField = FMLModContainer.class.getDeclaredField("modClasses");
-                    modClassesField.setAccessible(true);
-                    @SuppressWarnings("unchecked")
-                    List<Class<?>> modClasses = (List<Class<?>>) modClassesField.get(fmlModContainer);
-
-                    for (Class<?> modClass : modClasses) {
-                        inputstream = modClass.getResourceAsStream("/assets/" + resourceLocation.getNamespace() + "/" + resourceLocation.getPath());
-
-                        if (inputstream != null) {
-                            break;
-                        }
-                    }
+                if (assetPath.isPresent()) {
+                    inputstream = java.nio.file.Files.newInputStream(assetPath.get());
                 }
 
                 if (inputstream == null) {
@@ -559,7 +547,7 @@ public class JsonAssetLoader {
         JsonArray array = this.rootJson.get("animation").getAsJsonArray();
         boolean action = animation instanceof MainFrameAnimation;
         boolean attack = animation instanceof AttackAnimation;
-        boolean noTransformData = !action && !attack && FMLEnvironment.dist == Dist.DEDICATED_SERVER;
+        boolean noTransformData = !action && !attack && FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER;
         boolean root = true;
         Armature armature = animation.getArmature().get();
         Set<String> allowedJoints = Sets.newLinkedHashSet();
@@ -580,7 +568,7 @@ public class JsonAssetLoader {
             JsonObject jObject = element.getAsJsonObject();
             String name = jObject.get("name").getAsString();
 
-            if (attack && FMLEnvironment.dist == Dist.DEDICATED_SERVER && !allowedJoints.contains(name)) {
+            if (attack && FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER && !allowedJoints.contains(name)) {
                 if (name.equals(COORD_BONE)) {
                     root = false;
                 }

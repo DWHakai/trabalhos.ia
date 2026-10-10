@@ -40,24 +40,23 @@ public abstract class MixinLivingEntity {
 		LivingEntity self = (LivingEntity)((Object)this);
 		
 		EpicFightCapabilities.getUnparameterizedEntityPatch(self, HurtableEntityPatch.class).ifPresent(entitypatch -> {
-			AttributeSupplier.Builder builder = AttributeSupplier.builder();
+			// NeoForge's AttributeSupplier.Builder#hasAttribute is not vanilla, so track the attributes here
+			java.util.Map<net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute>, Double> attributes = new java.util.LinkedHashMap<> ();
 			
 			self.getAttributes().supplier.instances.forEach((k, v) -> {
-				builder.add(k, v.getBaseValue());
+				attributes.put(k, v.getBaseValue());
 			});
 			
-			if (!builder.hasAttribute(Attributes.ATTACK_DAMAGE)) builder.add(Attributes.ATTACK_DAMAGE);
-            if (!builder.hasAttribute(EpicFightAttributes.WEIGHT)) builder.add(EpicFightAttributes.WEIGHT);
-            if (!builder.hasAttribute(EpicFightAttributes.IMPACT)) builder.add(EpicFightAttributes.IMPACT);
-            if (!builder.hasAttribute(EpicFightAttributes.ARMOR_NEGATION)) builder.add(EpicFightAttributes.ARMOR_NEGATION);
-            if (!builder.hasAttribute(EpicFightAttributes.MAX_STRIKES)) builder.add(EpicFightAttributes.MAX_STRIKES);
-            if (!builder.hasAttribute(EpicFightAttributes.STUN_ARMOR)) builder.add(EpicFightAttributes.STUN_ARMOR);
-            if (!builder.hasAttribute(EpicFightAttributes.ASSASSINATION_RESISTANCE)) builder.add(EpicFightAttributes.ASSASSINATION_RESISTANCE);
-            if (!builder.hasAttribute(EpicFightAttributes.OFFHAND_ARMOR_NEGATION)) builder.add(EpicFightAttributes.OFFHAND_ARMOR_NEGATION);
-            if (!builder.hasAttribute(EpicFightAttributes.OFFHAND_IMPACT)) builder.add(EpicFightAttributes.OFFHAND_IMPACT);
-            if (!builder.hasAttribute(EpicFightAttributes.OFFHAND_MAX_STRIKES)) builder.add(EpicFightAttributes.OFFHAND_MAX_STRIKES);
-            if (!builder.hasAttribute(EpicFightAttributes.OFFHAND_ATTACK_SPEED)) builder.add(EpicFightAttributes.OFFHAND_ATTACK_SPEED);
+			for (net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute : java.util.List.of(
+				Attributes.ATTACK_DAMAGE, EpicFightAttributes.WEIGHT, EpicFightAttributes.IMPACT, EpicFightAttributes.ARMOR_NEGATION,
+				EpicFightAttributes.MAX_STRIKES, EpicFightAttributes.STUN_ARMOR, EpicFightAttributes.ASSASSINATION_RESISTANCE,
+				EpicFightAttributes.OFFHAND_ARMOR_NEGATION, EpicFightAttributes.OFFHAND_IMPACT, EpicFightAttributes.OFFHAND_MAX_STRIKES,
+				EpicFightAttributes.OFFHAND_ATTACK_SPEED)) {
+				attributes.putIfAbsent(attribute, attribute.value().getDefaultValue());
+			}
 			
+			AttributeSupplier.Builder builder = AttributeSupplier.builder();
+			attributes.forEach(builder::add);
 			self.getAttributes().supplier = builder.build();
 		});
 	}
