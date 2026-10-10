@@ -60,10 +60,10 @@ Minecraft (`validateAccessWidener` roda no `build`).
 | `AnimationRegistryEvent` (`ModLoader.postEvent`) | evento Fabric `AnimationRegistryEvent.EVENT`, disparado no init | feito |
 | Networking (`PayloadRegistrar`, `PacketDistributor`) | `PayloadTypeRegistry` + `ServerPlayNetworking`/`ClientPlayNetworking` | feito |
 | Global loot modifiers / `LootTableLoadEvent` | `LootTableEvents.MODIFY`; o modifier do livro de skill via `MixinLootTableModifiers` | feito |
-| `PartEntity` (Ender Dragon) | mixins no dragão | **fase 3** |
+| `PartEntity` (Ender Dragon) | `EnderDragonPart` do vanilla (o único `PartEntity` do jogo; `Level#getEntities` já inclui as partes) | feito |
 | Enum extension (`Rarity.EPICFIGHT_UNIQUE`) | não usado pelo mod: `UNIQUE` aponta para `Rarity.EPIC` | feito |
 | Métodos que o NeoForge adiciona em classes vanilla (`IItemExtension`, `ClientHooks`, `EventHooks`…) | interfaces injetadas pelo Loom (`fabric/ext`) + mixins, ou o comportamento padrão do NeoForge escrito direto | feito para o que compila |
-| Mixins do upstream | revisar alvos que só existem no código patcheado do NeoForge | **fase 3** |
+| Mixins do upstream (38) | conferidos contra o bytecode do Minecraft com `tools/check_mixins.py`; o único que dependia da tabela de locals inteira (`MixinLevelRenderer`) usa `@Local` | feito |
 | Integrações (GeckoLib, Iris/Sodium, Controlify, JEI, Curios, KubeJS…) | versões Fabric dessas libs | **fase 4**, opcional |
 
 ## Fases
@@ -75,6 +75,16 @@ Minecraft (`validateAccessWidener` roda no `build`).
 3. **Acabamento**: o que o compilador apontar, `PartEntity` do dragão, enum, revisão
    dos 38 mixins, testes em jogo.
 4. **Integrações opcionais** com outros mods.
+
+### Conferir os mixins sem abrir o jogo
+
+O Mixin só confere os alvos quando a classe carrega. `tools/check_mixins.py` confere todos os
+injectors contra o jar do Minecraft mapeado pelo Loom (método alvo, dono, descritor e ordinal
+de cada `INVOKE`/`FIELD`):
+
+```
+python tools/check_mixins.py <JDK>/bin/javap .gradle/loom-cache/minecraftMaven/net/minecraft/minecraft-merged-*/<versão>/minecraft-merged-*.jar src/main/java/yesman/epicfight/mixin src/main/java/yesman/epicfight/fabric/mixin
+```
 
 ## Código fora da compilação por enquanto
 
