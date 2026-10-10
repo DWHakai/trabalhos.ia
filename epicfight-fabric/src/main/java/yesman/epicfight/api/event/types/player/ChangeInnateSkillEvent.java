@@ -2,13 +2,12 @@ package yesman.epicfight.api.event.types.player;
 
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
 import yesman.epicfight.api.event.LivingEntityPatchEvent;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 
 /// An event hook when weapon innate skill is changed to new item
-/// You can use [LivingEquipmentChangeEvent] if the skill change is not your interest
+/// You can use NeoForge `LivingEquipmentChangeEvent` (Fabric port: VanillaEntityEventHooks#onEquipmentChanged) if the skill change is not your interest
 public class ChangeInnateSkillEvent extends LivingEntityPatchEvent {
 	private final ItemStack from;
 	private final ItemStack to;

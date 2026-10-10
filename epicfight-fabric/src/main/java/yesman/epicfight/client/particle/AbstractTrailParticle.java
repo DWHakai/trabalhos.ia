@@ -159,9 +159,9 @@ public abstract class AbstractTrailParticle<T extends EntityPatch<?>> extends Te
 		}
 	}
 	
-	@Override
+	// NeoForge frustum-culls particles by this box; vanilla does not cull particles at all
 	public AABB getRenderBoundingBox(float partialTicks) {
-        return AABB.INFINITE;
+        return new AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
     }
 	
 	@Override

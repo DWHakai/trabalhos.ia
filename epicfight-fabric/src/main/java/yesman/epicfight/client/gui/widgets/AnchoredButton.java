@@ -74,8 +74,8 @@ public class AnchoredButton extends Button implements AnchoredWidget, ThemeAppli
 
     @Override
     public int getFGColor() {
-        if (this.packedFGColor != -1) {
-            return this.packedFGColor;
+        if (this.getPackedFGColor() != -1) {
+            return this.getPackedFGColor();
         } else {
             return this.highlightWhen.apply(this) ? 0xFFFFFFFF : this.active ? 0xFFB6B6B6 : 0xFF1A1A1A;
         }

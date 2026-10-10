@@ -7,8 +7,7 @@ import net.minecraft.client.Options;
 import net.minecraft.client.player.Input;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
-import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.client.event.InputEvent;
+import yesman.epicfight.platform.client.event.InputEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.api.client.input.InputManager;
@@ -56,8 +55,8 @@ public final class InputUtils {
                 keyMapping == option.keyPickItem
         ) {
             @SuppressWarnings("UnstableApiUsage")
-            InputEvent.InteractionKeyMappingTriggered inputEvent = ClientHooks.onClickInput(
-                mouseButton, keyMapping, InteractionHand.MAIN_HAND
+            InputEvent.InteractionKeyMappingTriggered inputEvent = InputEvent.InteractionKeyMappingTriggered.BUS.post(
+                new InputEvent.InteractionKeyMappingTriggered(mouseButton, keyMapping, InteractionHand.MAIN_HAND)
             );
 
             return !inputEvent.isCanceled();

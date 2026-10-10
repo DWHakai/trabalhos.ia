@@ -392,8 +392,8 @@ public class LocalPlayerPatch extends AbstractClientPlayerPatch<LocalPlayer> {
 	
 	@Override
 	public void openSkillBook(ItemStack itemstack, InteractionHand hand) {
-		if (itemstack.has(EpicFightDataComponentTypes.SKILL)) {
-            Holder<Skill> skill = itemstack.get(EpicFightDataComponentTypes.SKILL);
+		if (itemstack.has(EpicFightDataComponentTypes.SKILL.get())) {
+            Holder<Skill> skill = itemstack.get(EpicFightDataComponentTypes.SKILL.get());
 			Minecraft.getInstance().setScreen(new SkillBookScreen(this.original, skill.value(), hand, null));
 		}
 	}

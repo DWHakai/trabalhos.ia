@@ -35,8 +35,9 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.armortrim.ArmorTrim;
-import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.FastColor;
+import net.minecraft.world.item.component.DyedItemColor;
 import yesman.epicfight.api.asset.AssetAccessor;
 import yesman.epicfight.api.asset.JsonAssetLoader;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
@@ -140,7 +141,8 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 				}
 				
 				M vanillaModel = vanillaLayer.getArmorModel(slot);
-				Model armorModel = ClientHooks.getArmorModel(livingentity, itemstack, slot, vanillaModel);
+				// Fabric port: NeoForge ClientHooks#getArmorModel defaults to the vanilla model
+				Model armorModel = vanillaModel;
 				SkinnedMesh armorMesh = this.getArmorModel(vanillaLayer, vanillaModel, armorModel, livingentity, armorItem, itemstack, slot);
 				
 				if (armorMesh == null) {
@@ -199,8 +201,8 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 				 * Copy from {@link HumanoidArmorLayer#renderArmorPiece}
 				 */
 				ArmorMaterial armormaterial = armorItem.getMaterial().value();
-				IClientItemExtensions extensions = IClientItemExtensions.of(itemstack);
-				int fallbackColor = extensions.getDefaultDyeColor(itemstack);
+				// Fabric port: the defaults of NeoForge IClientItemExtensions#getDefaultDyeColor / getArmorLayerTintColor
+				int fallbackColor = itemstack.is(ItemTags.DYEABLE) ? FastColor.ARGB32.opaque(DyedItemColor.getOrDefault(itemstack, DyedItemColor.LEATHER_COLOR)) : 0xFFFFFFFF;
 				boolean innerModel = innerModel(slot);
 
 				AnimatedArmorTextureEvent textureEvent = EpicFightClientEventHooks.Render.ANIMATED_ARMOR_TEXTURE.post(new AnimatedArmorTextureEvent(livingentity, itemstack, slot, vanillaModel));
@@ -208,13 +210,13 @@ public class WearableItemLayer<E extends LivingEntity, T extends LivingEntityPat
 
 				for (int layerIdx = 0; layerIdx < armormaterial.layers().size(); layerIdx++) {
 					ArmorMaterial.Layer armormaterial$layer = armormaterial.layers().get(layerIdx);
-					int packedColor = extensions.getArmorLayerTintColor(itemstack, livingentity, armormaterial$layer, layerIdx, fallbackColor);
+					int packedColor = armormaterial$layer.dyeable() ? fallbackColor : 0xFFFFFFFF;
 
 					if (packedColor != 0) {
 						Vector4f color = ColorUtil.unpackToARGBF(packedColor);
 						ResourceLocation texture = overriddenTexture != null
 								? overriddenTexture
-								: ParseUtil.tryGetOr(() -> armorMesh.getRenderProperties().customTexturePath(), () -> ClientHooks.getArmorTexture(livingentity, itemstack, armormaterial$layer, innerModel, slot));
+								: ParseUtil.tryGetOr(() -> armorMesh.getRenderProperties().customTexturePath(), () -> armormaterial$layer.texture(innerModel));
 						this.renderArmor(poseStack, buffers, packedLight, armorMesh, entitypatch.getArmature(), color.x, color.y, color.z, texture, poses);
 					}
 				}

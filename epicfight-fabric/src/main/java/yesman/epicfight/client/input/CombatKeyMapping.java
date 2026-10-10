@@ -3,7 +3,7 @@ package yesman.epicfight.client.input;
 import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import yesman.epicfight.platform.client.settings.KeyConflictContext;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.client.ClientEngine;
 
@@ -40,7 +40,8 @@ public class CombatKeyMapping extends KeyMapping {
 
     /// This key mapping only applies [KeyConflictContext#IN_GAME] since it represents player moves.
     public CombatKeyMapping(String description, InputConstants.Type type, int code, String category) {
-        super(description, KeyConflictContext.IN_GAME, type, code, category);
+        super(description, type, code, category);
+        this.setKeyConflictContext(KeyConflictContext.IN_GAME);
     }
 
     @Override

@@ -1,31 +1,21 @@
 package yesman.epicfight.main;
 
-import java.util.function.UnaryOperator;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Rarity;
-import net.neoforged.fml.common.asm.enumextension.EnumProxy;
 
+/// Fabric port: NeoForge extends `Rarity` with `epicfight:unique` (green) through an `EnumProxy`.
+/// Fabric has no enum extension, and vanilla builds the id map of `Rarity` in its static
+/// initializer, so an appended constant could not be synced. Nothing in Epic Fight uses the
+/// rarity, so `UNIQUE` falls back to [Rarity#EPIC].
 public class EpicFightExtensibleEnums {
-	
-	// Rarities
-	public static final EnumProxy<Rarity> UNIQUE_EMUM_PROXLY = new EnumProxy<> (
-		  Rarity.class
-		, -1
-		, EpicFightMod.MODID + ":unique"
-		, (UnaryOperator<Style>)style -> style.withColor(ChatFormatting.GREEN)
-    );
-	
 	public static void initExtensibleEnums() {
 		EpicFightRairity.init();
 	}
-	
+
 	public static class EpicFightRairity {
 		public static Rarity UNIQUE;
-		
+
 		private static void init() {
-			UNIQUE = UNIQUE_EMUM_PROXLY.getValue();
+			UNIQUE = Rarity.EPIC;
 		}
 	}
 }

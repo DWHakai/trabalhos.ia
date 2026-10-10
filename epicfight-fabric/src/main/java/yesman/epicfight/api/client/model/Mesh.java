@@ -12,6 +12,7 @@ import org.joml.Vector4f;
 import org.lwjgl.system.MemoryStack;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -20,7 +21,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.model.IQuadTransformer;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
@@ -181,7 +181,7 @@ public interface Mesh {
 		static int applyBakedLighting(int packedLight, ByteBuffer data) {
 	        int bl = packedLight & 0xFFFF;
 	        int sl = (packedLight >> 16) & 0xFFFF;
-	        int offset = IQuadTransformer.UV2 * 4; // int offset for vertex 0 * 4 bytes per int
+	        int offset = DefaultVertexFormat.BLOCK.getOffset(VertexFormatElement.UV2); // byte offset of the lightmap in vertex 0 (NeoForge IQuadTransformer.UV2 * 4)
 	        int blBaked = Short.toUnsignedInt(data.getShort(offset));
 	        int slBaked = Short.toUnsignedInt(data.getShort(offset + 2));
 	        bl = Math.max(bl, blBaked);

@@ -1,6 +1,6 @@
 package yesman.epicfight.client.renderer.shader.compute.loader;
 
-import net.neoforged.neoforge.client.event.RegisterShadersEvent;
+import yesman.epicfight.platform.client.event.RegisterShadersEvent;
 import org.lwjgl.opengl.GL33C;
 import org.lwjgl.opengl.GL43;
 import yesman.epicfight.EpicFight;

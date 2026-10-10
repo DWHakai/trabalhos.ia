@@ -49,7 +49,6 @@ public abstract class EpicFightRegistries {
         EpicFightDataComponentTypes.REGISTRY,
         EpicFightEntityTypes.REGISTRY,
         EpicFightExpandedEntityDataAccessors.REGISTRY,
-        EpicFightGlobalLootModifiers.REGISTRY,
         EpicFightItems.REGISTRY,
         EpicFightLootItemFunctions.REGISTRY,
         EpicFightMobEffects.REGISTRY,

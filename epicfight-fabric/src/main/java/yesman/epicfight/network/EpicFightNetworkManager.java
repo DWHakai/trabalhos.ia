@@ -142,7 +142,7 @@ public class EpicFightNetworkManager {
 	}
 
 	/// Same as NeoForge's `PacketDistributor`: several payloads go out as one bundle packet
-	private static Packet<ClientGamePacketListener> makeClientboundPacket(CustomPacketPayload message, CustomPacketPayload... others) {
+	private static Packet<? super ClientGamePacketListener> makeClientboundPacket(CustomPacketPayload message, CustomPacketPayload... others) {
 		if (others.length == 0) {
 			return ServerPlayNetworking.createS2CPacket(message);
 		}

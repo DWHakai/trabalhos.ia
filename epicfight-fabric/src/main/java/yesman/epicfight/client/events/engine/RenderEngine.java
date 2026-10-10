@@ -34,12 +34,7 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.*;
-import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.sweenus.simplytooltips.client.TooltipNavigationConfig;
-import net.sweenus.simplytooltips.client.render.ItemThemeRegistry;
+import yesman.epicfight.platform.client.event.*;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -446,19 +441,9 @@ public class RenderEngine implements IEventBasedEngine {
     }
 
     private boolean noSimplyTooltipsSupport(ItemTooltipEvent event) {
-        if (!ModPlatformProvider.get().isModLoaded(MinecraftMod.SIMPLY_TOOLTIPS.getModId())) {
-            return true;
-        }
-
-        ItemStack stack = event.getItemStack();
-        if (stack.isEmpty()) return true;
-
-        String namespace = BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace();
-        boolean isVanilla = namespace.equals("minecraft");
-        if (!isVanilla && !TooltipNavigationConfig.applyTooltipsToModItems()) return !ItemThemeRegistry.hasThemeForStack(stack);
-        if (isVanilla && !TooltipNavigationConfig.applyTooltipsToVanillaItems()) return !ItemThemeRegistry.hasThemeForStack(stack);
-
-        return !ItemThemeRegistry.hasThemeForStack(stack);
+        // Fabric port: the Simply Tooltips integration belongs to the compat phase (PORTING.md);
+        // until then tooltips always use Epic Fight's own layout.
+        return true;
     }
 
     private void epicfight$itemTooltip(ItemTooltipEvent event) {
@@ -764,27 +749,27 @@ public class RenderEngine implements IEventBasedEngine {
      **********************/
 
     @Override
-    public void gameEventBus(IEventBus gameEventBus) {
-        gameEventBus.addListener(this::epicfight$bossEventProgress);
-        gameEventBus.addListener(this::epicfight$renderLivingPre);
-        gameEventBus.addListener(this::epicfight$itemTooltip);
-        gameEventBus.addListener(this::epicfight$computeCameraAngles);
-        gameEventBus.addListener(this::epicfight$renderGuiPre);
-        gameEventBus.addListener(this::epicfight$renderHand);
-        gameEventBus.addListener(this::epicfight$renderAfterLevel);
-        gameEventBus.addListener(this::epicfight$renderTickPre);
-        gameEventBus.addListener(this::epicfight$renderTickPost);
-        gameEventBus.addListener(this::epicfight$clientTick$Pre);
-        gameEventBus.addListener(this::epicfight$clientTick$Post);
-        gameEventBus.addListener(this::epicfight$levelTickPost);
-        gameEventBus.addListener(this::epicfight$renderBlockHighlight);
+    public void gameEventBus() {
+        CustomizeGuiOverlayEvent.BossEventProgress.BUS.addListener(this::epicfight$bossEventProgress);
+        RenderLivingEvent.Pre.BUS.addListener(this::epicfight$renderLivingPre);
+        ItemTooltipEvent.BUS.addListener(this::epicfight$itemTooltip);
+        ViewportEvent.ComputeCameraAngles.BUS.addListener(this::epicfight$computeCameraAngles);
+        RenderGuiEvent.Pre.BUS.addListener(this::epicfight$renderGuiPre);
+        RenderHandEvent.BUS.addListener(this::epicfight$renderHand);
+        RenderLevelStageEvent.BUS.addListener(this::epicfight$renderAfterLevel);
+        RenderFrameEvent.Pre.BUS.addListener(this::epicfight$renderTickPre);
+        RenderFrameEvent.Post.BUS.addListener(this::epicfight$renderTickPost);
+        ClientTickEvent.Pre.BUS.addListener(this::epicfight$clientTick$Pre);
+        ClientTickEvent.Post.BUS.addListener(this::epicfight$clientTick$Post);
+        LevelTickEvent.Post.BUS.addListener(this::epicfight$levelTickPost);
+        RenderHighlightEvent.Block.BUS.addListener(this::epicfight$renderBlockHighlight);
 
         EpicFightClientEventHooks.Render.RENDER_ENDER_DRAGON.registerEvent(this::epicfight$renderEnderDragon);
     }
 
     @Override
-    public void modEventBus(IEventBus modEventBus) {
-        modEventBus.addListener(this::epicfight$addLayers);
+    public void modEventBus() {
+        EntityRenderersEvent.AddLayers.BUS.addListener(this::epicfight$addLayers);
     }
 
     /**

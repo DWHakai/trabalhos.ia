@@ -1,10 +1,10 @@
 package yesman.epicfight.registry.entries;
 
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import yesman.epicfight.platform.registry.DeferredHolder;
 import yesman.epicfight.platform.registry.DeferredRegister;
@@ -16,10 +16,10 @@ public final class EpicFightCreativeTabs {
 	public static final DeferredRegister<CreativeModeTab> REGISTRY = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, EpicFightMod.MODID);
 
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> ITEMS = REGISTRY.register("items", () ->
-		CreativeModeTab.builder()
+		FabricItemGroup.builder()
 			.title(Component.translatable("itemGroup.epicfight.items"))
 			.icon(() -> new ItemStack(EpicFightItems.SKILLBOOK.get()))
-			.withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
+			// Fabric port: Fabric pages modded tabs after the vanilla ones (NeoForge: withTabsBefore SPAWN_EGGS)
 			.backgroundTexture(EpicFightMod.identifier("textures/gui/container/epicfight_creative_tab.png"))
 			.hideTitle()
 			.displayItems((params, output) -> {

@@ -8,27 +8,30 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.LootTableLoadEvent;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
+import net.minecraft.resources.ResourceKey;
 import yesman.epicfight.api.event.types.registry.RegisterMobSkillBookLootTableEvent;
 import yesman.epicfight.config.CommonConfig;
 import yesman.epicfight.data.loot.function.SetSkillFunction;
-import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.registry.entries.EpicFightItems;
 import yesman.epicfight.registry.entries.EpicFightSkills;
 
-@EventBusSubscriber(modid = EpicFightMod.MODID)
 public class EpicFightLootTables {
-	@SubscribeEvent
-	public static void onLootTableRegistry(final LootTableLoadEvent event) {
+	/// Fabric port: NeoForge `LootTableLoadEvent` -> Fabric `LootTableEvents.MODIFY`; the mob skill
+	/// book tables are rebuilt once per reload (`ALL_LOADED`) instead of on every loaded table.
+	public static void registerEvents() {
+		LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> onLootTableRegistry(key, tableBuilder));
+		LootTableEvents.ALL_LOADED.register((resourceManager, lootRegistry) -> OnSkillBookDroppedByEntity.registerEntitySkillLootTable());
+	}
+	
+	public static void onLootTableRegistry(ResourceKey<LootTable> name, LootTable.Builder table) {
 		int modifier = CommonConfig.skillBookChestLootModifier;
 		int dropChance = 100 + modifier;
 		int antiDropChance = 100 - modifier;
 		float dropChanceModifier = dropChance / (float)(antiDropChance + dropChance);
 		
-    	if (event.getName().equals(BuiltInLootTables.DESERT_PYRAMID.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
+    	if (name.equals(BuiltInLootTables.DESERT_PYRAMID)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
     			.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -41,13 +44,13 @@ public class EpicFightLootTables {
     			)).when(LootItemRandomChanceCondition.randomChance(dropChanceModifier)))
     		.build());
     		
-    		event.getTable().addPool(LootPool.lootPool().when(LootItemRandomChanceCondition.randomChance(0.25F))
+    		table.pool(LootPool.lootPool().when(LootItemRandomChanceCondition.randomChance(0.25F))
     			.add(LootItem.lootTableItem(EpicFightItems.UCHIGATANA.get()))
     		.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.JUNGLE_TEMPLE.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
+    	if (name.equals(BuiltInLootTables.JUNGLE_TEMPLE)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
         		.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -60,13 +63,13 @@ public class EpicFightLootTables {
         		))).when(LootItemRandomChanceCondition.randomChance(dropChanceModifier))
         	.build());
     		
-    		event.getTable().addPool(LootPool.lootPool().when(LootItemRandomChanceCondition.randomChance(0.25F))
+    		table.pool(LootPool.lootPool().when(LootItemRandomChanceCondition.randomChance(0.25F))
     			.add(LootItem.lootTableItem(EpicFightItems.UCHIGATANA.get()))
     		.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.SIMPLE_DUNGEON.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
+    	if (name.equals(BuiltInLootTables.SIMPLE_DUNGEON)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
         		.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -79,8 +82,8 @@ public class EpicFightLootTables {
         	.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.ABANDONED_MINESHAFT.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
+    	if (name.equals(BuiltInLootTables.ABANDONED_MINESHAFT)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
         		.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -93,8 +96,8 @@ public class EpicFightLootTables {
         	.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.PILLAGER_OUTPOST.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
+    	if (name.equals(BuiltInLootTables.PILLAGER_OUTPOST)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
         		.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -107,8 +110,8 @@ public class EpicFightLootTables {
         	.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.UNDERWATER_RUIN_BIG.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
+    	if (name.equals(BuiltInLootTables.UNDERWATER_RUIN_BIG)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 3.0F))
         		.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -122,8 +125,8 @@ public class EpicFightLootTables {
         	.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.SHIPWRECK_MAP.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
+    	if (name.equals(BuiltInLootTables.SHIPWRECK_MAP)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 2.0F))
         		.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -136,8 +139,8 @@ public class EpicFightLootTables {
         	.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.STRONGHOLD_LIBRARY.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 5.0F))
+    	if (name.equals(BuiltInLootTables.STRONGHOLD_LIBRARY)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 5.0F))
     			.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -153,8 +156,8 @@ public class EpicFightLootTables {
     		.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.WOODLAND_MANSION.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 5.0F))
+    	if (name.equals(BuiltInLootTables.WOODLAND_MANSION)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 5.0F))
     			.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -170,8 +173,8 @@ public class EpicFightLootTables {
     		.build());
     	}
     	
-    	if (event.getName().equals(BuiltInLootTables.BASTION_OTHER.location())) {
-    		event.getTable().addPool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 4.0F))
+    	if (name.equals(BuiltInLootTables.BASTION_OTHER)) {
+    		table.pool(LootPool.lootPool().setRolls(UniformGenerator.between(1.0F, 4.0F))
     			.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
     				EpicFightSkills.BERSERKER,
     				EpicFightSkills.STAMINA_PILLAGER,
@@ -186,8 +189,6 @@ public class EpicFightLootTables {
     			))).when(LootItemRandomChanceCondition.randomChance(dropChanceModifier * 0.3F))
     		.build());
     	}
-    	
-    	OnSkillBookDroppedByEntity.registerEntitySkillLootTable();
     }
 
 	public static void createSkillLootTable(RegisterMobSkillBookLootTableEvent skillLootTableRegistryEvent) {

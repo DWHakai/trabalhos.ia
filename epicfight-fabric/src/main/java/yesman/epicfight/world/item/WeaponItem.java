@@ -32,8 +32,6 @@ public class WeaponItem extends Item {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
     }
 
-    @Override
-    public boolean canPerformAction(ItemStack stack, net.neoforged.neoforge.common.ItemAbility itemAbility) {
-        return net.neoforged.neoforge.common.ItemAbilities.DEFAULT_SWORD_ACTIONS.contains(itemAbility);
-    }
+    // Fabric port: NeoForge canPerformAction(DEFAULT_SWORD_ACTIONS) has no Fabric counterpart;
+    // Epic Fight drives weapon attacks itself, so the vanilla sweep check never applies.
 }

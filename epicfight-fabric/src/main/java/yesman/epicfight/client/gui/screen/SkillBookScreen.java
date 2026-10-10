@@ -75,7 +75,7 @@ public class SkillBookScreen extends Screen {
         WEAPON_CATEGORY_ICONS.put(WeaponCategories.LONGSWORD, new ItemStack(EpicFightItems.IRON_LONGSWORD.get()));
         WEAPON_CATEGORY_ICONS.put(WeaponCategories.DAGGER, new ItemStack(EpicFightItems.IRON_DAGGER.get()));
         WEAPON_CATEGORY_ICONS.put(WeaponCategories.SHIELD, new ItemStack(Items.SHIELD));
-        WEAPON_CATEGORY_ICONS.put(WeaponCategories.BOW, new ItemStack(Items.BOW));
+        WEAPON_CATEGORY_ICONS.put(WeaponCategories.RANGED, new ItemStack(Items.BOW));
 
         ATTRIBUTE_ICONS.put(Attributes.MAX_HEALTH, new TextureInfo(SKILLBOOK_BACKGROUND, 22, 195, 10, 10));
         ATTRIBUTE_ICONS.put(EpicFightAttributes.MAX_STAMINA, new TextureInfo(SKILLBOOK_BACKGROUND, 42, 195, 10, 10));
@@ -217,7 +217,7 @@ public class SkillBookScreen extends Screen {
             buttonMessage = GUI_WIDGET_SKILL_BOOK_UNUSABLE;
         }
 
-        this.learnButton =
+        this.learnButton = new LearnButton( // NeoForge: Button.Builder#build(LearnButton::new)
             Button.builder(
                 Component.translatable(buttonMessage),
                 button -> {
@@ -233,7 +233,7 @@ public class SkillBookScreen extends Screen {
             )
             .bounds(this.width / 2 + 54, this.height / 2 + 90, 67, 21)
             .tooltip(Tooltip.create(tooltip, null))
-            .build(LearnButton::new);
+            );
 
         if (isUsing || !meetsCondition) {
             this.learnButton.active = false;
@@ -665,7 +665,8 @@ public class SkillBookScreen extends Screen {
         );
 
         protected LearnButton(Builder builder) {
-            super(builder);
+            super(builder.x, builder.y, builder.width, builder.height, builder.message, builder.onPress, builder.createNarration); // NeoForge Button(Builder)
+            this.setTooltip(builder.tooltip);
         }
 
         @Override

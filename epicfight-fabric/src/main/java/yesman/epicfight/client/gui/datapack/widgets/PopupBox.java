@@ -157,7 +157,7 @@ public abstract class PopupBox<T> extends AbstractWidget implements DataBindingC
 		}
 		
 		public RegistryPopupBox(Screen owner, Font font, int x1, int x2, int y1, int y2, HorizontalSizing horizontal, VerticalSizing vertical, Component title, Registry<T> registry, Consumer<T> onPressRow, Consumer<Pair<String, T>> responder) {
-			super(owner, font, x1, x2, y1, y2, horizontal, vertical, title, (item) -> registry.containsValue(item) ? registry.getKey(item).toString() : ParseUtil.nullParam(item), responder);
+			super(owner, font, x1, x2, y1, y2, horizontal, vertical, title, (item) -> registry.getResourceKey(item).isPresent() ? registry.getKey(item).toString() : ParseUtil.nullParam(item), responder);
 			
 			this.registry = registry;
 			this.onPressRow = onPressRow;

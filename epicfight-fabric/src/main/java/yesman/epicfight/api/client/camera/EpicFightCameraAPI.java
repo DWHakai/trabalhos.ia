@@ -21,7 +21,7 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
-import net.neoforged.neoforge.client.event.ViewportEvent;
+import yesman.epicfight.platform.client.event.ViewportEvent;
 import net.minecraft.world.entity.boss.EnderDragonPart;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.jetbrains.annotations.ApiStatus;

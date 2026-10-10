@@ -21,13 +21,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.ClientHooks;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.MovementInputUpdateEvent;
+import yesman.epicfight.platform.client.event.ClientTickEvent;
+import yesman.epicfight.platform.client.event.InputEvent;
+import yesman.epicfight.platform.client.event.MovementInputUpdateEvent;
 import net.minecraft.world.entity.boss.EnderDragonPart;
-import net.neoforged.neoforge.event.entity.living.LivingEvent.LivingJumpEvent;
+import yesman.epicfight.platform.event.LivingJumpEvent;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -656,7 +654,7 @@ public class ControlEngine implements IEventBasedEngine {
 
 		if (consumes && eventCheck) {
 			int mouseButton = InputConstants.Type.MOUSE == key.getKey().getType() ? key.getKey().getValue() : -1;
-			InputEvent.InteractionKeyMappingTriggered inputEvent = ClientHooks.onClickInput(mouseButton, key, InteractionHand.MAIN_HAND);
+			InputEvent.InteractionKeyMappingTriggered inputEvent = InputEvent.InteractionKeyMappingTriggered.BUS.post(new InputEvent.InteractionKeyMappingTriggered(mouseButton, key, InteractionHand.MAIN_HAND));
 
 	        if (inputEvent.isCanceled()) {
 	        	return false;
@@ -1112,15 +1110,15 @@ public class ControlEngine implements IEventBasedEngine {
 	 * Event listeners end
 	 **********************/
 	@Override
-	public void gameEventBus(IEventBus gameEventBus) {
-		gameEventBus.addListener(this::epicfight$mouseScrollEvent);
-		gameEventBus.addListener(this::epicfight$moveInputEvent);
-		gameEventBus.addListener(this::epicfight$clientTickEndEvent);
-		gameEventBus.addListener(this::epicfight$interactionKeyMappingTriggered);
-		gameEventBus.addListener(this::epicfight$livingJumpEvent);
+	public void gameEventBus() {
+		InputEvent.MouseScrollingEvent.BUS.addListener(this::epicfight$mouseScrollEvent);
+		MovementInputUpdateEvent.BUS.addListener(this::epicfight$moveInputEvent);
+		ClientTickEvent.Post.BUS.addListener(this::epicfight$clientTickEndEvent);
+		InputEvent.InteractionKeyMappingTriggered.BUS.addListener(this::epicfight$interactionKeyMappingTriggered);
+		LivingJumpEvent.BUS.addListener(this::epicfight$livingJumpEvent);
 	}
 
 	@Override
-	public void modEventBus(IEventBus modEventBus) {
+	public void modEventBus() {
 	}
 }

@@ -69,8 +69,25 @@ dependencies {
 sourceSets.main.java {
     // NeoForge event handlers, to be rewritten on Fabric callbacks/mixins
     exclude "yesman/epicfight/client/platform/neoforge/**"
-    // Optional integrations with other mods: phase 4
-    exclude "yesman/epicfight/compat/*/**"
+    // Optional integrations with other mods: phase 4 (controlify is already in)
+    exclude "yesman/epicfight/compat/azurelib/**"
+    exclude "yesman/epicfight/compat/betterthirdperson/**"
+    exclude "yesman/epicfight/compat/curiosapi/**"
+    exclude "yesman/epicfight/compat/fgm/**"
+    exclude "yesman/epicfight/compat/firstperson/**"
+    exclude "yesman/epicfight/compat/geckolib/**"
+    exclude "yesman/epicfight/compat/iris/**"
+    exclude "yesman/epicfight/compat/jei/**"
+    exclude "yesman/epicfight/compat/kubejs/**"
+    exclude "yesman/epicfight/compat/mcreator/**"
+    exclude "yesman/epicfight/compat/playeranimator/**"
+    exclude "yesman/epicfight/compat/playerrevive/**"
+    exclude "yesman/epicfight/compat/shouldersurfing/**"
+    exclude "yesman/epicfight/compat/simplytooltips/**"
+    exclude "yesman/epicfight/compat/skinlayer3d/**"
+    exclude "yesman/epicfight/compat/sodium/**"
+    exclude "yesman/epicfight/compat/vampirism/**"
+    exclude "yesman/epicfight/compat/werewolves/**"
     // Data generation (NeoForge GatherDataEvent): not needed to play,
     // the generated data is fetched from upstream (src/generated/resources)
     exclude "yesman/epicfight/data/DataEvents.java"
@@ -154,7 +171,11 @@ processResources {
                  minecraft_version: project.minecraft_version,
                  forgeconfigapiport_version: project.forgeconfigapiport_version]
     inputs.properties(props)
-    filesMatching("fabric.mod.json") { expand(props) }
+    // Plain token replacement instead of expand(): the injected interface keys contain "$"
+    // (inner class names), which the Groovy template engine would read as variables
+    filesMatching("fabric.mod.json") {
+        filter { String line -> props.inject(line) { String l, k, v -> l.replace('${' + k + '}', v.toString()) } }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

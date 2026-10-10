@@ -71,19 +71,19 @@ public class FractureBlockState extends BlockState {
 		return true;
 	}
 	
-	@Override
+	// Fabric port: NeoForge face culling hooks; the occlusion shape of this state is empty, so vanilla
+	// never culls neighbour faces against it either
 	public boolean hidesNeighborFace(BlockGetter level, BlockPos pos, BlockState neighborState, Direction dir) {
 		return false;
 	}
 	
-	@Override
 	public boolean supportsExternalFaceHiding() {
 		return false;
 	}
 	
 	@Override
 	public int getLightEmission(BlockGetter level, BlockPos blockPos) {
-		return ORIGINAL_BLOCK_STATE_CACHE.containsKey(blockPos.hashCode()) ? ORIGINAL_BLOCK_STATE_CACHE.get(blockPos.hashCode()).getLightEmission(level, blockPos) : this.owner.getLightEmission(this, level, blockPos);
+		return ORIGINAL_BLOCK_STATE_CACHE.containsKey(blockPos.hashCode()) ? ORIGINAL_BLOCK_STATE_CACHE.get(blockPos.hashCode()).getLightEmission(level, blockPos) : super.getLightEmission(level, blockPos);
 	}
 	
 	@Override

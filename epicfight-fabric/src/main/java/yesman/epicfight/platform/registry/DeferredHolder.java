@@ -37,15 +37,14 @@ public class DeferredHolder<R, T extends R> implements Holder<R>, Supplier<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public R value() {
+    public T value() {
         this.bind(true);
-        return Objects.requireNonNull(this.holder, () -> "Trying to access unbound value: " + this.key).value();
+        return (T) Objects.requireNonNull(this.holder, () -> "Trying to access unbound value: " + this.key).value();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public T get() {
-        return (T) this.value();
+        return this.value();
     }
 
     public Optional<T> asOptional() {

@@ -19,7 +19,8 @@ public final class EpicFightCommandArgumentTypes {
 	public static final DeferredHolder<ArgumentTypeInfo<?, ?>, ArgumentTypeInfo<AnimationArgument, ?>> ANIMATION = REGISTRY.register("animation", () -> SingletonArgumentInfo.contextFree(AnimationArgument::animation));
 	
 	public static void registerArgumentTypes() {
-		ArgumentTypeInfos.registerByClass(SkillArgument.class, SKILL.get());
-		ArgumentTypeInfos.registerByClass(AnimationArgument.class, ANIMATION.get());
+		// Fabric port: NeoForge exposes registerByClass; here the class map is widened
+		ArgumentTypeInfos.BY_CLASS.put(SkillArgument.class, SKILL.get());
+		ArgumentTypeInfos.BY_CLASS.put(AnimationArgument.class, ANIMATION.get());
 	}
 }

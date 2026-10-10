@@ -4,7 +4,14 @@
   "version": "${version}",
   "name": "Epic Fight (Fabric port)",
   "description": "Unofficial Fabric port of Epic Fight for personal use. Adds complex game mechanics and fighting styles to your gameplay, while making Minecraft more Souls-like.",
-  "authors": ["Yesman", "Gui", "Asan", "Wayfarer(aka squoshi)", "Fori", "Ellet"],
+  "authors": [
+    "Yesman",
+    "Gui",
+    "Asan",
+    "Wayfarer(aka squoshi)",
+    "Fori",
+    "Ellet"
+  ],
   "contact": {
     "homepage": "https://epicfight-docs.readthedocs.io",
     "sources": "https://github.com/Epic-Fight/epicfight"
@@ -13,16 +20,72 @@
   "icon": "epicfight_logo.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["yesman.epicfight.fabric.EpicFightFabric"],
-    "client": ["yesman.epicfight.fabric.client.EpicFightFabricClient"]
+    "main": [
+      "yesman.epicfight.fabric.EpicFightFabric"
+    ],
+    "client": [
+      "yesman.epicfight.fabric.client.EpicFightFabricClient"
+    ]
   },
   "accessWidener": "epicfight.accesswidener",
-  "mixins": ["epicfight.mixins.json", "epicfight.fabric.mixins.json"],
+  "mixins": [
+    "epicfight.mixins.json",
+    "epicfight.fabric.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "minecraft": "~${minecraft_version}",
     "java": ">=21",
     "fabric-api": "*",
     "forgeconfigapiport": ">=${forgeconfigapiport_version}"
+  },
+  "custom": {
+    "loom:injected_interfaces": {
+      "net/minecraft/class_304": [
+        "yesman/epicfight/fabric/ext/KeyMappingExtension"
+      ],
+      "net/minecraft/class_437": [
+        "yesman/epicfight/fabric/ext/ScreenExtension"
+      ],
+      "net/minecraft/class_465": [
+        "yesman/epicfight/fabric/ext/AbstractContainerScreenExtension"
+      ],
+      "net/minecraft/class_7225$class_7874": [
+        "yesman/epicfight/fabric/ext/HolderLookupProviderExtension"
+      ],
+      "net/minecraft/class_4538": [
+        "yesman/epicfight/fabric/ext/LevelReaderExtension"
+      ],
+      "net/minecraft/class_1799": [
+        "yesman/epicfight/fabric/ext/ItemStackExtension"
+      ],
+      "net/minecraft/class_1297": [
+        "yesman/epicfight/fabric/ext/EntityExtension"
+      ],
+      "net/minecraft/class_4970$class_4971": [
+        "yesman/epicfight/fabric/ext/BlockStateExtension"
+      ],
+      "net/minecraft/class_332": [
+        "yesman/epicfight/fabric/ext/GuiGraphicsExtension"
+      ],
+      "net/minecraft/class_339": [
+        "yesman/epicfight/fabric/ext/AbstractWidgetExtension"
+      ],
+      "net/minecraft/class_310": [
+        "yesman/epicfight/fabric/ext/MinecraftExtension"
+      ],
+      "net/minecraft/class_761": [
+        "yesman/epicfight/fabric/ext/LevelRendererExtension"
+      ],
+      "net/minecraft/class_1538": [
+        "yesman/epicfight/fabric/ext/LightningBoltExtension"
+      ],
+      "net/minecraft/class_2388": [
+        "yesman/epicfight/fabric/ext/BlockParticleOptionExtension"
+      ],
+      "net/minecraft/class_276": [
+        "yesman/epicfight/fabric/ext/RenderTargetExtension"
+      ]
+    }
   }
 }

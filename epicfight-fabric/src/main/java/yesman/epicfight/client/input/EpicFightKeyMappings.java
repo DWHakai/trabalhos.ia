@@ -2,7 +2,8 @@ package yesman.epicfight.client.input;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import yesman.epicfight.platform.client.settings.ContextKeyMapping;
+import yesman.epicfight.platform.client.settings.KeyConflictContext;
 import org.jetbrains.annotations.NotNull;
 import yesman.epicfight.generated.LangKeys;
 import yesman.epicfight.platform.client.ClientModPlatformProvider;
@@ -14,7 +15,7 @@ public class EpicFightKeyMappings {
 
     // GUI key-mappings
     public static final KeyMapping WEAPON_INNATE_SKILL_TOOLTIP =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_SHOW_TOOLTIP,
                     KeyConflictContext.GUI,
                     InputConstants.Type.KEYSYM,
@@ -23,7 +24,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping SKILL_EDIT =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_SKILL_GUI,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -32,7 +33,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping OPEN_CONFIG_SCREEN =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_CONFIG,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -41,7 +42,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping OPEN_EMOTE_WHEEL =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_EMOTE,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -89,7 +90,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping SWITCH_MODE =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_SWITCH_MODE,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -98,7 +99,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping LOCK_ON =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_LOCK_ON,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -107,7 +108,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping LOCK_ON_SHIFT_LEFT =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_LOCK_ON_SHIFT_LEFT,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -116,7 +117,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping LOCK_ON_SHIFT_RIGHT =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_LOCK_ON_SHIFT_RIGHT,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,
@@ -125,7 +126,7 @@ public class EpicFightKeyMappings {
             ));
 
     public static final KeyMapping LOCK_ON_SHIFT_FREELY =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_LOCK_ON_SHIFT_FREELY,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.MOUSE,
@@ -135,7 +136,7 @@ public class EpicFightKeyMappings {
 
     // Systemical key mappings especially for debugging
     public static final KeyMapping SWITCH_VANILLA_MODEL_DEBUGGING =
-            registerKey(new KeyMapping(
+            registerKey(new ContextKeyMapping(
                     LangKeys.KEY_SWITCH_VANILLA_MODEL_DEBUG,
                     KeyConflictContext.IN_GAME,
                     InputConstants.Type.KEYSYM,

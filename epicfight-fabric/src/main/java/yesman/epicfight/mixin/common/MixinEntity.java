@@ -47,15 +47,7 @@ public abstract class MixinEntity {
 	@Shadow
     protected abstract void addAdditionalSaveData(CompoundTag compound);
 	
-	@Inject(at = @At(value = "TAIL"), method = "onAddedToLevel()V", remap = false)
-	private void epicfight$onAddedToLevel(CallbackInfo callbackInfo) {
-		Entity self = (Entity)((Object)this);
-		EntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(self, EntityPatch.class);
-		
-		if (entitypatch != null) {
-			entitypatch.onAddedToLevel();
-		}
-	}
+	// Fabric port: onAddedToLevel is a NeoForge method; see yesman.epicfight.fabric.EntityLevelHooks
 	
 	@Inject(at = @At(value = "HEAD"), method = "lerpMotion(DDD)V", cancellable = true)
 	public void epicfight$lerpMotion(double pX, double pY, double pZ, CallbackInfo callback) {

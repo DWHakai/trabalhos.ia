@@ -12,8 +12,8 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
-import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.ModList;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.api.client.model.transformer.HumanoidModelBaker;
@@ -153,7 +153,7 @@ public class EpicFightSettingScreen extends Screen {
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawString(this.font, "EpicFight " + ModList.get().getModFileById(EpicFightMod.MODID).versionString(), 4, this.height - 16, 0xFF9F9F9F);
+        guiGraphics.drawString(this.font, "EpicFight " + FabricLoader.getInstance().getModContainer(EpicFightMod.MODID).map(mod -> mod.getMetadata().getVersion().getFriendlyString()).orElse(""), 4, this.height - 16, 0xFF9F9F9F);
     }
 
     @Override

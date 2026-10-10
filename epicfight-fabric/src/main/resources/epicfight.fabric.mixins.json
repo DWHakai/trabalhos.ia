@@ -5,9 +5,42 @@
   "package": "yesman.epicfight.fabric.mixin",
   "mixins": [
     "MixinEntityPatchHolder",
-    "MixinHolderReference"
+    "MixinHolderReference",
+    "event.MixinItemStackTooltip",
+    "event.MixinLivingEntityJump",
+    "event.MixinLootTableModifiers",
+    "event.MixinPersistentEntitySectionManager",
+    "ext.MixinBlockParticleOption",
+    "ext.MixinBlockStateBase",
+    "ext.MixinEntityExtension",
+    "ext.MixinHolderLookupProvider",
+    "ext.MixinItemStackExtension",
+    "ext.MixinLevelReader",
+    "ext.MixinLightningBolt"
   ],
   "client": [
+    "client.MixinAbstractContainerScreen",
+    "client.MixinAbstractWidget",
+    "client.MixinGuiGraphics",
+    "client.MixinKeyMapping",
+    "client.MixinLevelRendererExtension",
+    "client.MixinMinecraftExtension",
+    "client.MixinRenderTarget",
+    "client.MixinScreen",
+    "client.event.MixinBossHealthOverlayEvents",
+    "client.event.MixinCameraEvents",
+    "client.event.MixinClientLevelEvents",
+    "client.event.MixinClientPacketListenerEvents",
+    "client.event.MixinEntityRenderDispatcherEvents",
+    "client.event.MixinGameRendererEvents",
+    "client.event.MixinGuiEvents",
+    "client.event.MixinInputEvents",
+    "client.event.MixinItemInHandRendererEvents",
+    "client.event.MixinLevelRendererEvents",
+    "client.event.MixinLivingEntityRendererEvents",
+    "client.event.MixinLocalPlayerEvents",
+    "client.event.MixinMinecraftEvents",
+    "client.event.MixinParticleEngineRender"
   ],
   "injectors": {
     "defaultRequire": 1

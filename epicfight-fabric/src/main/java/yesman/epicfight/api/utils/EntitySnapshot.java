@@ -178,7 +178,7 @@ public class EntitySnapshot<T extends LivingEntityPatch<?>> {
 					bakedmodel.getTransforms().getTransform(ItemDisplayContext.THIRD_PERSON_RIGHT_HAND).apply(false, poseStack); // NeoForge ClientHooks#handleCameraTransforms
 					poseStack.translate(-0.5F, -0.5F, -0.5F);
 					
-					for (var model : bakedmodel.getRenderPasses(itemstack, true)) {
+					for (var model : java.util.List.of(bakedmodel)) { // NeoForge BakedModel#getRenderPasses default
 						renderModelLists(model, itemstack, packedLight, OverlayTexture.NO_OVERLAY, alpha, poseStack, buffers.getBuffer(rendertype), drawingFunction);
 					}
 				}

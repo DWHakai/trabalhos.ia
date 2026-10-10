@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.config.ModConfig;
 import yesman.epicfight.EpicFight;
 import yesman.epicfight.api.animation.AnimationManager;
+import yesman.epicfight.api.animation.AnimationManager.AnimationRegistryEvent;
 import yesman.epicfight.api.animation.LivingMotion;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.client.input.action.EpicFightInputAction;
@@ -36,6 +37,8 @@ import yesman.epicfight.config.ClientConfig;
 import yesman.epicfight.config.CommonConfig;
 import yesman.epicfight.config.ServerConfig;
 import yesman.epicfight.data.loot.EpicFightLootTables;
+import yesman.epicfight.epicskins.animation.EpicSkinsAnimations;
+import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.main.EpicFightExtensibleEnums;
@@ -43,6 +46,7 @@ import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.main.EpicFightSharedConstants;
 import yesman.epicfight.network.EntityPairingPacketType;
 import yesman.epicfight.network.EntityPairingPacketTypes;
+import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.platform.fabric.FabricModPlatform;
 import yesman.epicfight.platform.registry.RegistryBuilder;
 import yesman.epicfight.registry.EpicFightRegistries;
@@ -66,6 +70,8 @@ import yesman.epicfight.world.capabilities.item.WeaponTypeReloadListener;
 import yesman.epicfight.world.capabilities.item.ItemKeywordReloadListener;
 import yesman.epicfight.world.gamerule.EpicFightGameRules;
 import yesman.epicfight.world.item.SkillBookItem;
+
+import java.util.Comparator;
 
 /// Fabric entrypoint. Mirrors the constructor and lifecycle listeners of the upstream NeoForge
 /// entrypoint (`yesman.epicfight.main.EpicFightMod` on the upstream 1.21.1 branch), in the same order.
@@ -116,6 +122,10 @@ public final class EpicFightFabric implements ModInitializer {
         // DeferredRegister adds its entries (NeoForge: DeferredRegister#register(IEventBus)).
         EpicFightRegistries.DEFERRED_REGISTRIES.forEach(deferredRegister -> deferredRegister.registerAll());
         RegistryBuilder.bakeAll();
+        // EntityAttributeCreationEvent / EntityAttributeModificationEvent
+        EpicFightAttributes.EventBus.registerAttributes();
+        // RegisterPayloadHandlersEvent
+        EpicFightNetworkManager.register();
         DynamicRegistries.registerSynced(EpicFightRegistries.Keys.EMOTE, Emote.CODEC, Emote.CODEC);
 
         // TODO(port, phase 2): NeoForge item capability (RegisterCapabilitiesEvent / EpicFightCapabilities.CAPABILITY_ITEM)
@@ -136,9 +146,13 @@ public final class EpicFightFabric implements ModInitializer {
         }
 
         AnimationManager.addNoWarningModId(EpicFight.EPICSKINS_MODID);
-        // TODO(port, phase 2): AnimationRegistryEvent is posted on the NeoForge mod bus
-        //  (ModLoader.postEvent) and Epic Fight registers its own animations by listening to it.
-        //  Turn it into a plain callback and run the builders here, sorted by namespace.
+        // AnimationRegistryEvent: a mod bus event upstream (ModLoader.postEvent), here a Fabric
+        // event other mods can listen to from their own initializers
+        AnimationRegistryEvent.EVENT.register(Animations::registerAnimations);
+        AnimationRegistryEvent.EVENT.register(EpicSkinsAnimations::registerAnimations);
+        AnimationRegistryEvent animationRegistryEvent = new AnimationRegistryEvent();
+        AnimationRegistryEvent.EVENT.invoker().accept(animationRegistryEvent);
+        animationRegistryEvent.getBuilders().stream().sorted(Comparator.comparing(AnimationManager.AnimationBuilder::namespace)).forEach(builder -> builder.task().accept(builder));
 
         // FMLCommonSetupEvent
         Armatures.registerEntityTypes();
@@ -151,6 +165,8 @@ public final class EpicFightFabric implements ModInitializer {
         EpicFightMobEffects.addOffhandModifier();
         EpicFightExtensibleEnums.initExtensibleEnums();
         EpicFightEventHooks.Registry.SKILLBOOK_LOOT_TABLE.registerEvent(EpicFightLootTables::createSkillLootTable);
+        // LootTableLoadEvent
+        EpicFightLootTables.registerEvents();
 
         // RegisterCommandsEvent
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
