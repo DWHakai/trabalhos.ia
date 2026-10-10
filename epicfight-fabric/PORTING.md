@@ -4,8 +4,8 @@ Port do **Epic Fight 21.17.3.1 (Minecraft 1.21.1, NeoForge)** para **Fabric**.
 Base: branch `1.21.1` do repositório oficial, commit `a78aa24`
 (`upstream_commit` em `gradle.properties`).
 
-> **Status: `./gradlew build` passa (etapa 1).** Ainda não testado em jogo: os eventos
-> comuns de gameplay (etapa 2) e a capability de item ainda não estão ligados.
+> **Status: `./gradlew build` passa e os eventos comuns de gameplay estão ligados
+> (etapa 2).** Ainda não testado em jogo: os alvos dos mixins só são conferidos em runtime.
 
 ## Licença
 
@@ -52,7 +52,7 @@ Minecraft (`validateAccessWidener` roda no `build`).
 | `BuildCreativeModeTabContentsEvent` | `ItemGroupEvents.MODIFY_ENTRIES_ALL` | escrito |
 | `DataPackRegistryEvent` (emotes) | `DynamicRegistries.registerSynced` | escrito |
 | Access transformer | Access widener (AT do Epic Fight + AT do NeoForge) | feito |
-| ~60 eventos de gameplay (dano, knockback, tick, morte, montaria, efeitos…) | callbacks do Fabric API onde existem, mixins próprios no resto | **fase 2** |
+| Eventos de gameplay do upstream (`NeoForgeEntityEvent`, `NeoForgePlayerEvent`, `NeoForgeWorldEvent`) | `fabric/FabricCommonEvents` (dano recebido, equipamento, tracking, clone, uso de item, sync de datapack) + mixins em `fabric/mixin/event` nos mesmos pontos dos patches do NeoForge | feito |
 | Eventos de cliente (render de entidades, câmera, GUI, input, mão, nameplate) | `platform/client/event` (mesma API) disparados por mixins em `fabric/mixin/client/event` | feito |
 | `IEventBasedEngine` (ClientEngine/RenderEngine/ControlEngine) | `IEventBasedEngine.init()` registra nas listas de `platform/client/event` | feito |
 | Data Attachments (`NeoForgeRegistries.ATTACHMENT_TYPES`) | campo no `Entity` (`MixinEntityPatchHolder`), criado sob demanda | feito |

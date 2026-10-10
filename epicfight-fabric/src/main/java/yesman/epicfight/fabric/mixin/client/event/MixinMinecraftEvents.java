@@ -7,6 +7,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.client.player.LocalPlayer;
@@ -24,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import yesman.epicfight.api.client.event.impl.VanillaGeneralClientEventHooks;
+import yesman.epicfight.client.world.util.FakeLevel;
 import yesman.epicfight.platform.client.event.InputEvent;
 import yesman.epicfight.platform.client.event.RenderFrameEvent;
 
@@ -31,13 +33,15 @@ import yesman.epicfight.platform.client.event.RenderFrameEvent;
 /// - `RenderFrameEvent.Pre`/`Post` around `GameRenderer#render`;
 /// - `InputEvent.InteractionKeyMappingTriggered` (`ClientHooks#onClickInput`) in `continueAttack`,
 ///   `startAttack`, `startUseItem` and `pickBlock`, with the same cancel/swing handling;
-/// - `ClientPlayerNetworkEvent.LoggingOut` in `disconnect`.
+/// - `ClientPlayerNetworkEvent.LoggingOut` in `disconnect`;
+/// - `LevelEvent.Unload` of the client level in `setLevel`, `disconnect` and `clearClientLevel`.
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraftEvents {
     @Shadow @Final public Options options;
     @Shadow @Nullable public LocalPlayer player;
     @Shadow @Nullable public HitResult hitResult;
     @Shadow @Final public ParticleEngine particleEngine;
+    @Shadow @Nullable public ClientLevel level;
     @Shadow @Final private DeltaTracker.Timer timer;
 
     @Unique
@@ -146,5 +150,19 @@ public abstract class MixinMinecraftEvents {
         if (this.player != null) {
             VanillaGeneralClientEventHooks.onPlayerLoggedOut(this.player);
         }
+    }
+
+    // LevelEvent.Unload (upstream NeoForgeWorldEvent.WorldEventsClient#unloadLevel)
+
+    @Inject(method = "setLevel", at = @At("HEAD"))
+    private void epicfight$unloadLevel(CallbackInfo ci) {
+        if (this.level != null) {
+            FakeLevel.unloadFakeLevel();
+        }
+    }
+
+    @Inject(method = {"disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", "clearClientLevel"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;onDisconnected()V"))
+    private void epicfight$unloadLevelOnDisconnect(CallbackInfo ci) {
+        FakeLevel.unloadFakeLevel();
     }
 }

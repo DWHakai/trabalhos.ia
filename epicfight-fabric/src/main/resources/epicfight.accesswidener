@@ -827,3 +827,4 @@ accessible field net/minecraft/client/gui/components/Button$Builder width I
 accessible field net/minecraft/client/gui/components/Button$Builder height I
 accessible field net/minecraft/client/gui/components/Button$Builder createNarration Lnet/minecraft/client/gui/components/Button$CreateNarration;
 accessible field net/minecraft/commands/synchronization/ArgumentTypeInfos BY_CLASS Ljava/util/Map;
+accessible field net/minecraft/world/level/storage/PlayerDataStorage playerDir Ljava/io/File;

@@ -168,6 +168,9 @@ public final class EpicFightFabric implements ModInitializer {
         // LootTableLoadEvent
         EpicFightLootTables.registerEvents();
 
+        // Game events (upstream NeoForgeEntityEvent, NeoForgePlayerEvent, NeoForgeWorldEvent)
+        FabricCommonEvents.register();
+
         // RegisterCommandsEvent
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             PlayerModeCommand.register(dispatcher);
