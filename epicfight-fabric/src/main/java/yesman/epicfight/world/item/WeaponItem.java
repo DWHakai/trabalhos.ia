@@ -32,6 +32,6 @@ public class WeaponItem extends Item {
         stack.hurtAndBreak(1, attacker, EquipmentSlot.MAINHAND);
     }
 
-    // Fabric port: NeoForge canPerformAction(DEFAULT_SWORD_ACTIONS) has no Fabric counterpart;
-    // Epic Fight drives weapon attacks itself, so the vanilla sweep check never applies.
+    // Fabric port: NeoForge canPerformAction(DEFAULT_SWORD_ACTIONS) has no Fabric counterpart. The
+    // sweep attack is the one sword action vanilla combat uses: see fabric.mixin.event.MixinPlayerSweep
 }

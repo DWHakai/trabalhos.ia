@@ -17,6 +17,7 @@
     "event.MixinPersistentEntitySectionManager",
     "event.MixinPlayerEvents",
     "event.MixinPlayerListEvents",
+    "event.MixinPlayerSweep",
     "event.MixinProjectileEvents",
     "event.MixinServerLevelEvents",
     "event.MixinServerPlayerEvents",

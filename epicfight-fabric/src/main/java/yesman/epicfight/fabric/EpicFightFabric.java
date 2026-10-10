@@ -128,7 +128,7 @@ public final class EpicFightFabric implements ModInitializer {
         EpicFightNetworkManager.register();
         DynamicRegistries.registerSynced(EpicFightRegistries.Keys.EMOTE, Emote.CODEC, Emote.CODEC);
 
-        // TODO(port, phase 2): NeoForge item capability (RegisterCapabilitiesEvent / EpicFightCapabilities.CAPABILITY_ITEM)
+        // RegisterCapabilitiesEvent: EpicFightCapabilities asks the item capability provider directly
         // TODO(port, phase 4): optional mod integrations (loadModCompatibilityModules)
 
         // FMLConstructModEvent
