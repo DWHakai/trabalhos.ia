@@ -64,7 +64,7 @@ Minecraft (`validateAccessWidener` roda no `build`).
 | Enum extension (`Rarity.EPICFIGHT_UNIQUE`) | não usado pelo mod: `UNIQUE` aponta para `Rarity.EPIC` | feito |
 | Métodos que o NeoForge adiciona em classes vanilla (`IItemExtension`, `ClientHooks`, `EventHooks`…) | interfaces injetadas pelo Loom (`fabric/ext`) + mixins, ou o comportamento padrão do NeoForge escrito direto | feito para o que compila |
 | Mixins do upstream (38) | conferidos contra o bytecode do Minecraft com `tools/check_mixins.py`; o único que dependia da tabela de locals inteira (`MixinLevelRenderer`) usa `@Local` | feito |
-| Integrações com outros mods | as que existem no Fabric, ver "Integrações" abaixo | feito (só compila; não testado com os mods instalados) |
+| Integrações com outros mods | as que existem no Fabric, ver "Integrações" abaixo | feito (testado com todos instalados) |
 | Loader de modelo `neoforge:separate_transforms` (modelo das armas: 3D na mão, ícone chapado no inventário) | `fabric/client/model/SeparateTransformsModel` (resolver do Fabric Model Loading API) + `MixinItemRendererSeparateTransforms` | feito |
 | `Registry#safeCastToReference` aceitando `DeferredHolder` (patch do NeoForge) | `fabric/mixin/MixinRegistry` | feito |
 
@@ -89,7 +89,30 @@ só carregam quando o mod está instalado.
 | Controlify | entrypoint `controlify` no `fabric.mod.json` (no upstream era `META-INF/services`) |
 | Shoulder Surfing | `shouldersurfing_plugin.json` na raiz do mod, igual ao upstream |
 
+Para rodar o cliente de desenvolvimento com todos esses mods instalados, use `-Pcompat` (só muda
+o `runClient`, o jar continua sem depender deles):
+
+```
+EPICFIGHT_SMOKE_TEST=1 ./gradlew runClient -Pcompat --args='--quickPlaySingleplayer "New World"'
+```
+
+Com `-Pcompat` o loader do dev vira o `compat_loader_version` (0.17.3), porque GeckoLib 4.8.3 e
+Controlify 2.5.0 pedem loader 0.17 ou mais novo. Os jars aninhados (TRansition/TRender) de First
+Person Model e 3D Skin Layers são extraídos, porque o classpath do dev não lê jar-in-jar.
+
+Testado em 11/10/2026 com todos instalados: o teste em jogo inteiro (armas, esquiva, defesa,
+habilidades especiais) passa e dá os mesmos números, menos os combos de uchigatana e bokken, que
+acertam mais porque o Shoulder Surfing desliga o modo de câmera TPS do Epic Fight (aviso no log,
+igual ao upstream; sem o Shoulder Surfing os números voltam). O Iris foi testado sem shaderpack.
+Avisos no log que não são do port: o mixin `AbstractRecipeBookScreenMixin` do Controlify (só
+falha no ambiente de desenvolvimento) e o `getCloak` que player-animation-lib e First Person
+Model sobrescrevem os dois.
+
 Diferenças do upstream:
+- Iris: o Iris do Fabric redireciona a mesma leitura do `RENDER_ORDER` que o port usava para
+  desenhar os tipos de partícula próprios (o `ParticleEngine` do NeoForge já faz isso), e o jogo
+  travava ao abrir. `MixinParticleEngineRender` agora estende a lista do Iris
+  (`@ModifyExpressionValue`) em vez de trocá-la.
 - GeckoLib: no Fabric o `GeoRenderEvent.Entity.Pre` cancela devolvendo `false`.
 - 3D Skin Layers: as malhas ficavam num data attachment do jogador; aqui é um `WeakHashMap` no
   cliente. A skin vem de `player.getSkin().texture()` em vez do `PlayerUtil` do TRansition

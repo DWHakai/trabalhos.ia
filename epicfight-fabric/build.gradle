@@ -35,6 +35,11 @@ repositories {
     }
     maven { name = "ParchmentMC"; url = "https://maven.parchmentmc.org" }
     maven {
+        name = "Quilt (parsers used by Controlify and YACL, -Pcompat only)"
+        url = "https://maven.quiltmc.org/repository/release/"
+        content { includeGroup "org.quiltmc.parsers" }
+    }
+    maven {
         name = "Fuzs Mod Resources (Forge Config API Port)"
         url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
         content { includeGroup "fuzs.forgeconfigapiport" }
@@ -46,6 +51,8 @@ loom {
     accessWidenerPath = file("src/main/resources/epicfight.accesswidener")
 }
 
+def compatRuntime = project.hasProperty("compat")
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     // Same names as upstream (Mojang mappings + Parchment parameter names), so the
@@ -54,7 +61,9 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${project.minecraft_version}:${project.parchment_version}@zip")
     }
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    // -Pcompat runs the dev client with the optional integrations installed (see below); GeckoLib
+    // and Controlify need a newer loader than the one the mod requires
+    modImplementation "net.fabricmc:fabric-loader:${compatRuntime ? project.compat_loader_version : project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
     include "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${project.forgeconfigapiport_version}"
@@ -67,6 +76,37 @@ dependencies {
     modCompileOnly "maven.modrinth:shoulder-surfing-reloaded:${project.shoulder_surfing_version}"
     modCompileOnly "maven.modrinth:first-person-model:${project.first_person_model_version}"
     modCompileOnly "maven.modrinth:3dskinlayers:${project.skinlayers_version}"
+
+    if (compatRuntime) {
+        modLocalRuntime "maven.modrinth:iris:${project.iris_version}"
+        modLocalRuntime "maven.modrinth:sodium:${project.sodium_version}"
+        // their own libraries (hid4java, SDL bindings, Quilt parsers...) come from the poms
+        modLocalRuntime("dev.isxander:controlify:${project.controlify_version}") {
+            exclude group: "net.fabricmc"; exclude group: "net.fabricmc.fabric-api"; exclude group: "com.terraformersmc"
+            // mods it has integrations with (Sodium and Iris come in above) and the loader's MixinExtras
+            exclude group: "maven.modrinth"; exclude group: "io.github.llamalad7"
+        }
+        modLocalRuntime("dev.isxander:yet-another-config-lib:${project.yacl_version}") { exclude group: "net.fabricmc"; exclude group: "net.fabricmc.fabric-api"; exclude group: "com.terraformersmc" }
+        modLocalRuntime("software.bernie.geckolib:geckolib-fabric-1.21.1:${project.geckolib_version}") { transitive = false }
+        modLocalRuntime("dev.kosmx.player-anim:player-animation-lib-fabric:${project.player_anim_version}") { transitive = false }
+        modLocalRuntime "maven.modrinth:shoulder-surfing-reloaded:${project.shoulder_surfing_version}"
+        modLocalRuntime "maven.modrinth:first-person-model:${project.first_person_model_version}"
+        modLocalRuntime "maven.modrinth:3dskinlayers:${project.skinlayers_version}"
+
+        // The dev classpath ignores jar-in-jar: First Person Model and 3D Skin Layers ship their
+        // TRansition/TRender libraries nested, so they are taken out of the jar here
+        def firstPersonModel = configurations.detachedConfiguration(dependencies.create("maven.modrinth:first-person-model:${project.first_person_model_version}"))
+        def nestedJars = layout.buildDirectory.dir("compat-nested-jars").get().asFile
+        copy {
+            from(zipTree(firstPersonModel.singleFile)) {
+                include "META-INF/jars/*.jar"
+                eachFile { it.path = it.name }
+            }
+            into nestedJars
+            includeEmptyDirs = false
+        }
+        modLocalRuntime fileTree(nestedJars) { include "*.jar" }
+    }
 
     // javax.annotation (@Nullable etc.), shipped by NeoForge but not by Fabric
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
