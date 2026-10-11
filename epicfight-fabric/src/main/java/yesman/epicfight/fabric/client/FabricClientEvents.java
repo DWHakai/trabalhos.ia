@@ -29,6 +29,7 @@ import yesman.epicfight.client.renderer.entity.WitherGhostRenderer;
 import yesman.epicfight.client.renderer.entity.WitherSkeletonMinionRenderer;
 import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
 import yesman.epicfight.client.renderer.patched.layer.WearableItemLayer;
+import yesman.epicfight.fabric.client.model.SeparateTransformsModel;
 import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.platform.client.event.EntityRenderersEvent;
 import yesman.epicfight.platform.client.event.GuiLayers;
@@ -54,6 +55,8 @@ public final class FabricClientEvents {
 		EntityRenderersEvent.AddLayers.BUS.addListener(FabricClientEvents::addLayers);
 		registerGuiLayers();
 		ModelLoadingPlugin.register(FabricClientEvents::skillBookModels);
+		// The weapon item models use NeoForge's separate_transforms loader
+		SeparateTransformsModel.register();
 
 		// ClientEvents
 		ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {

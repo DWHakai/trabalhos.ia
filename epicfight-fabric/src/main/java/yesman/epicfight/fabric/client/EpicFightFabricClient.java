@@ -24,6 +24,7 @@ import yesman.epicfight.client.renderer.shader.compute.loader.ComputeShaderProvi
 import yesman.epicfight.compat.ICompatModule;
 import yesman.epicfight.config.ClientConfig;
 import yesman.epicfight.fabric.FabricReloadListener;
+import yesman.epicfight.fabric.client.dev.PortSmokeTest;
 import yesman.epicfight.platform.client.event.ClientTickEvent;
 import yesman.epicfight.platform.client.event.LevelTickEvent;
 import yesman.epicfight.platform.client.event.RegisterShadersEvent;
@@ -65,6 +66,7 @@ public final class EpicFightFabricClient implements ClientModInitializer {
         SkillBookScreen.registerIconItems();
         EpicFightItemProperties.registerItemProperties();
         ICompatModule.initClientModules();
+        PortSmokeTest.registerIfEnabled();
 
         // Needs an OpenGL context and the loaded client config. Runs before the first resource
         // reload applies, so before the compute shaders are loaded.

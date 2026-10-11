@@ -6,6 +6,7 @@
   "mixins": [
     "MixinEntityPatchHolder",
     "MixinHolderReference",
+    "MixinRegistry",
     "event.MixinBowItemEvents",
     "event.MixinCrossbowItemEvents",
     "event.MixinEnderManEvents",
@@ -33,6 +34,7 @@
     "client.MixinAbstractContainerScreen",
     "client.MixinAbstractWidget",
     "client.MixinGuiGraphics",
+    "client.MixinItemRendererSeparateTransforms",
     "client.MixinKeyMapping",
     "client.MixinLevelRendererExtension",
     "client.MixinMinecraftExtension",

@@ -65,6 +65,8 @@ Minecraft (`validateAccessWidener` roda no `build`).
 | Métodos que o NeoForge adiciona em classes vanilla (`IItemExtension`, `ClientHooks`, `EventHooks`…) | interfaces injetadas pelo Loom (`fabric/ext`) + mixins, ou o comportamento padrão do NeoForge escrito direto | feito para o que compila |
 | Mixins do upstream (38) | conferidos contra o bytecode do Minecraft com `tools/check_mixins.py`; o único que dependia da tabela de locals inteira (`MixinLevelRenderer`) usa `@Local` | feito |
 | Integrações com outros mods | as que existem no Fabric, ver "Integrações" abaixo | feito (só compila; não testado com os mods instalados) |
+| Loader de modelo `neoforge:separate_transforms` (modelo das armas: 3D na mão, ícone chapado no inventário) | `fabric/client/model/SeparateTransformsModel` (resolver do Fabric Model Loading API) + `MixinItemRendererSeparateTransforms` | feito |
+| `Registry#safeCastToReference` aceitando `DeferredHolder` (patch do NeoForge) | `fabric/mixin/MixinRegistry` | feito |
 
 ## Fases
 
@@ -98,6 +100,17 @@ Descartadas (sem versão Fabric ou fora do escopo): Vampirism, Werewolves, KubeJ
 AzureLib, Better Third Person, Wildfire's Female Gender Mod, MCreator, PlayerRevive, Simply
 Tooltips. Ficam excluídas no `build.gradle`; os recursos delas estão em
 `upstream-meta/compat-resources`.
+
+### Teste automático em jogo
+
+Com a variável `EPICFIGHT_SMOKE_TEST`, o cliente de desenvolvimento entra no mundo, pega as
+armas, liga o modo Epic Fight, ataca um husk com cada arma e salva fotos em
+`run/screenshots/smoke_*.png`; depois fecha sozinho (`fabric/client/dev/PortSmokeTest`, não faz
+nada num jogo normal). Precisa de um mundo chamado "New World" em `run/saves`:
+
+```
+EPICFIGHT_SMOKE_TEST=1 ./gradlew runClient --args='--quickPlaySingleplayer "New World"'
+```
 
 ### Conferir os mixins sem abrir o jogo
 
