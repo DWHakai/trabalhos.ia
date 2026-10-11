@@ -112,6 +112,15 @@ nada num jogo normal). Precisa de um mundo chamado "New World" em `run/saves`:
 EPICFIGHT_SMOKE_TEST=1 ./gradlew runClient --args='--quickPlaySingleplayer "New World"'
 ```
 
+A mesma classe roda no upstream (NeoForge) para comparar as fotos: registrada com
+`@EventBusSubscriber` no `ClientTickEvent.Post`, `devLogin = false` e
+`programArguments.addAll("--quickPlaySingleplayer", "New World")` na run `client` (o
+`--args` não chega ao jogo no ModDevGradle). No commit a78aa24 o upstream não compila sem
+trocar `WeaponCategories.BOW` por `RANGED` (3 arquivos). Comparado em 11/10/2026: as fotos e a
+vida dos husks depois de cada combo batem com o upstream, inclusive a primeira pessoa
+animada do modo Epic Fight (sem animação de POV, só um pedaço do braço aparece no canto e a
+arma fica fora da tela; é assim no upstream também).
+
 ### Conferir os mixins sem abrir o jogo
 
 O Mixin só confere os alvos quando a classe carrega. `tools/check_mixins.py` confere todos os
