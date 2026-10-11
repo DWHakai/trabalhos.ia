@@ -1,15 +1,20 @@
 package yesman.epicfight.fabric.client.dev;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Zombie;
+import yesman.epicfight.client.input.EpicFightKeyMappings;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.config.ClientConfig;
 import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 
 import java.util.ArrayList;
@@ -20,9 +25,10 @@ import java.util.function.Consumer;
 /// Development-only smoke test of the port, turned on by the `EPICFIGHT_SMOKE_TEST` environment
 /// variable (`./gradlew runClient --args='--quickPlaySingleplayer "<world>"'`).
 ///
-/// Once in the world it gives itself the weapons, switches to Epic Fight mode, swings at a zombie
-/// and saves screenshots to `run/screenshots/smoke_*.png`, then closes the game. Nothing here runs
-/// in a normal game.
+/// Once in the world it gives itself the weapons, switches to Epic Fight mode, swings at a zombie,
+/// dodges and guards, and saves screenshots to `run/screenshots/smoke_*.png`, then closes the
+/// game. `EPICFIGHT_SMOKE_TEST=skills` runs only the dodge and guard part. Nothing here runs in a
+/// normal game.
 public final class PortSmokeTest {
     private static final String[] WEAPONS = {
         "iron_longsword", "iron_tachi", "iron_spear", "iron_greatsword", "iron_dagger", "uchigatana", "bokken"
@@ -42,6 +48,13 @@ public final class PortSmokeTest {
         EpicFightMod.LOGGER.warn("[smoke test] enabled");
         buildSteps();
         ClientTickEvents.END_CLIENT_TICK.register(PortSmokeTest::tick);
+        ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
+            if (entity instanceof ServerPlayer) {
+                EpicFightMod.LOGGER.warn("[smoke test] player hurt: {} by {} ({}) amount {}", source.getMsgId(), source.getEntity(), source.getDirectEntity(), amount);
+            }
+
+            return true;
+        });
     }
 
     private static void at(int tick, Consumer<Minecraft> action) {
@@ -71,7 +84,102 @@ public final class PortSmokeTest {
         }
     }
 
+    /// What the local player is playing (base layer and the visible composite layers) and the
+    /// skills in the dodge and guard slots, as the client sees them.
+    private static void logPlayer(Minecraft minecraft, String when) {
+        EpicFightCapabilities.getUnparameterizedEntityPatch(minecraft.player, LocalPlayerPatch.class).ifPresent(playerpatch -> {
+            StringBuilder animations = new StringBuilder();
+            playerpatch.getClientAnimator().iterVisibleLayersUntilFalse(layer -> {
+                if (!layer.isOff()) {
+                    animations.append(layer.animationPlayer.getRealAnimation().get()).append(' ');
+                }
+
+                return true;
+            });
+
+            SkillContainer dodge = playerpatch.getSkill(SkillSlots.DODGE);
+            SkillContainer guard = playerpatch.getSkill(SkillSlots.GUARD);
+            ServerPlayer serverPlayer = minecraft.getSingleplayerServer().getPlayerList().getPlayer(minecraft.player.getUUID());
+
+            EpicFightMod.LOGGER.warn("[smoke test] {}: pos {} health {} stamina {} dodge {} guard {} (active {}) animations [{}]",
+                when, minecraft.player.position(), serverPlayer.getHealth(), playerpatch.getStamina(),
+                dodge.getSkill() == null ? "-" : dodge.getSkill().getRegistryName(),
+                guard.getSkill() == null ? "-" : guard.getSkill().getRegistryName(), guard.isActivated(), animations.toString().trim());
+        });
+    }
+
+    /// Dodge (roll and step, the dodge key) and guard (hold the guard key, take a hit from the front).
+    private static int buildSkillSteps(int tick) {
+        at(tick, mc -> {
+            command(mc, "kill @e[type=!player]");
+            command(mc, "tp @s -268.9 71 38.6 0 10");
+            command(mc, "epicfight mode epicfight");
+            command(mc, "epicfight skill add @s dodge epicfight:roll");
+            command(mc, "epicfight skill add @s guard epicfight:guard");
+            command(mc, "effect give @s minecraft:instant_health 1 10 true");
+            mc.player.getInventory().selected = 0;
+            mc.options.hideGui = true;
+            mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+        });
+        tick += 20;
+
+        for (String dodge : new String[] {"roll", "step"}) {
+            final int start = tick;
+            at(start, mc -> command(mc, "epicfight skill add @s dodge epicfight:" + dodge));
+            at(start + 10, mc -> logPlayer(mc, "before " + dodge));
+            at(start + 12, mc -> KeyMapping.click(EpicFightKeyMappings.DODGE.getKey()));
+            at(start + 15, mc -> {
+                logPlayer(mc, dodge + " +3");
+                screenshot(mc, "7_dodge_" + dodge + "_3");
+            });
+            at(start + 20, mc -> screenshot(mc, "7_dodge_" + dodge + "_8"));
+            at(start + 35, mc -> logPlayer(mc, "after " + dodge));
+            at(start + 36, mc -> command(mc, "tp @s -268.9 71 38.6 0 10"));
+            tick += 45;
+        }
+
+        // guard: survival, so the hit goes through the damage events
+        at(tick, mc -> {
+            command(mc, "gamemode survival");
+            command(mc, "summon husk -268.9 71 41.6 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f]}");
+        });
+        at(tick + 5, mc -> EpicFightKeyMappings.GUARD.setDown(true));
+        at(tick + 15, mc -> {
+            logPlayer(mc, "guarding");
+            screenshot(mc, "8_guard_hold");
+        });
+        at(tick + 17, mc -> command(mc, "damage @s 4 minecraft:mob_attack by @e[type=husk,limit=1,sort=nearest]"));
+        at(tick + 19, mc -> screenshot(mc, "8_guard_hit"));
+        at(tick + 22, mc -> logPlayer(mc, "guard hit (4 damage)"));
+        at(tick + 25, mc -> EpicFightKeyMappings.GUARD.setDown(false));
+        at(tick + 40, mc -> {
+            logPlayer(mc, "not guarding");
+            command(mc, "damage @s 4 minecraft:mob_attack by @e[type=husk,limit=1,sort=nearest]");
+        });
+        at(tick + 45, mc -> logPlayer(mc, "unguarded hit (4 damage)"));
+        at(tick + 50, mc -> command(mc, "gamemode creative"));
+
+        return tick + 55;
+    }
+
     private static void buildSteps() {
+        if ("skills".equals(System.getenv("EPICFIGHT_SMOKE_TEST"))) {
+            at(40, mc -> {
+                command(mc, "gamemode creative");
+                command(mc, "time set day");
+                command(mc, "weather clear");
+                command(mc, "clear");
+                command(mc, "item replace entity @s hotbar.0 with epicfight:iron_longsword");
+            });
+            int end = buildSkillSteps(60);
+            at(end, mc -> {
+                EpicFightMod.LOGGER.warn("[smoke test] done");
+                mc.stop();
+            });
+            STEPS.sort(Comparator.comparingInt(Step::tick));
+            return;
+        }
+
         at(40, mc -> {
             command(mc, "gamemode creative");
             command(mc, "time set day");
@@ -172,6 +280,7 @@ public final class PortSmokeTest {
         }
 
         tick += 30;
+        tick = buildSkillSteps(tick);
 
         at(tick, mc -> {
             EpicFightMod.LOGGER.warn("[smoke test] done");

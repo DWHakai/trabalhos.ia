@@ -121,6 +121,13 @@ vida dos husks depois de cada combo batem com o upstream, inclusive a primeira p
 animada do modo Epic Fight (sem animação de POV, só um pedaço do braço aparece no canto e a
 arma fica fora da tela; é assim no upstream também).
 
+`EPICFIGHT_SMOKE_TEST=skills` roda só as skills: esquiva (`roll` e `step`, tecla de esquiva) e
+defesa (`guard`, segura a tecla de defesa e toma 4 de dano de um husk na frente, depois sem
+defender). Comparado com o upstream em 11/10/2026: mesmas posições depois de cada esquiva, o
+golpe defendido não tira vida e gasta 0,3 de stamina, o sem defesa tira 4. Atenção: o Epic
+Fight lê o estado físico do mouse (`InputManager#isPhysicalKeyDown`), então clicar na janela
+durante o teste muda o resultado.
+
 ### Conferir os mixins sem abrir o jogo
 
 O Mixin só confere os alvos quando a classe carrega. `tools/check_mixins.py` confere todos os
