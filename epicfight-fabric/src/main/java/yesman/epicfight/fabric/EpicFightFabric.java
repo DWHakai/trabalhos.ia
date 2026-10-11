@@ -9,6 +9,8 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ItemStack;
@@ -50,6 +52,7 @@ import yesman.epicfight.network.EntityPairingPacketType;
 import yesman.epicfight.network.EntityPairingPacketTypes;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.platform.fabric.FabricModPlatform;
+import yesman.epicfight.platform.registry.DeferredRegister;
 import yesman.epicfight.platform.registry.RegistryBuilder;
 import yesman.epicfight.registry.EpicFightRegistries;
 import yesman.epicfight.registry.entries.*;
@@ -87,13 +90,9 @@ public final class EpicFightFabric implements ModInitializer {
         // TODO(port, phase 4): TooltipProviderRegistry.register(new EpicFightTooltipProvider(), 2) (Simply Tooltips compat)
 
         // Configs (Forge Config API Port keeps the NeoForge ModConfigSpec API)
-        if (EpicFightSharedConstants.isPhysicalClient()) {
-            NeoForgeConfigRegistry.INSTANCE.register(EpicFight.MODID, ModConfig.Type.CLIENT, ClientConfig.SPEC);
-        } else {
-            NeoForgeConfigRegistry.INSTANCE.register(EpicFight.MODID, ModConfig.Type.SERVER, ServerConfig.SPEC);
-        }
-        NeoForgeConfigRegistry.INSTANCE.register(EpicFight.MODID, ModConfig.Type.COMMON, CommonConfig.SPEC);
-        // ModConfigEvent.Loading listeners (upstream: @EventBusSubscriber in the config classes)
+        // ModConfigEvent.Loading listeners (upstream: @EventBusSubscriber in the config classes).
+        // Registered first: Forge Config API Port loads the client and common configs as soon as
+        // they are registered.
         NeoForgeModConfigEvents.loading(EpicFight.MODID).register(config -> {
             if (EpicFightSharedConstants.isPhysicalClient()) {
                 ClientConfig.epicfight$modConfigLoading(config);
@@ -103,6 +102,13 @@ public final class EpicFightFabric implements ModInitializer {
 
             CommonConfig.onLoad(config);
         });
+
+        if (EpicFightSharedConstants.isPhysicalClient()) {
+            NeoForgeConfigRegistry.INSTANCE.register(EpicFight.MODID, ModConfig.Type.CLIENT, ClientConfig.SPEC);
+        } else {
+            NeoForgeConfigRegistry.INSTANCE.register(EpicFight.MODID, ModConfig.Type.SERVER, ServerConfig.SPEC);
+        }
+        NeoForgeConfigRegistry.INSTANCE.register(EpicFight.MODID, ModConfig.Type.COMMON, CommonConfig.SPEC);
 
         // Extensible enums
         LivingMotion.ENUM_MANAGER.registerEnumCls(EpicFight.MODID, LivingMotions.class);
@@ -120,20 +126,8 @@ public final class EpicFightFabric implements ModInitializer {
             WidgetTheme.ENUM_MANAGER.registerEnumCls(EpicFightMod.prefix("anchored_button_built_in_theme"), AnchoredButton.BuiltInTheme.class);
         }
 
-        // Registries: touching EpicFightRegistries creates the custom registries, then every
-        // DeferredRegister adds its entries (NeoForge: DeferredRegister#register(IEventBus)).
-        EpicFightRegistries.DEFERRED_REGISTRIES.forEach(deferredRegister -> deferredRegister.registerAll());
-        RegistryBuilder.bakeAll();
-        // EntityAttributeCreationEvent / EntityAttributeModificationEvent
-        EpicFightAttributes.EventBus.registerAttributes();
-        // RegisterPayloadHandlersEvent
-        EpicFightNetworkManager.register();
-        DynamicRegistries.registerSynced(EpicFightRegistries.Keys.EMOTE, Emote.CODEC, Emote.CODEC);
-
-        // RegisterCapabilitiesEvent: EpicFightCapabilities asks the item capability provider directly
-        loadModCompatibilityModules();
-
-        // FMLConstructModEvent
+        // FMLConstructModEvent: before the registries, like upstream (the skills read the
+        // Animations fields when they are built)
         LivingMotion.ENUM_MANAGER.loadEnum();
         SkillCategory.ENUM_MANAGER.loadEnum();
         SkillSlot.ENUM_MANAGER.loadEnum();
@@ -155,6 +149,23 @@ public final class EpicFightFabric implements ModInitializer {
         AnimationRegistryEvent animationRegistryEvent = new AnimationRegistryEvent();
         AnimationRegistryEvent.EVENT.invoker().accept(animationRegistryEvent);
         animationRegistryEvent.getBuilders().stream().sorted(Comparator.comparing(AnimationManager.AnimationBuilder::namespace)).forEach(builder -> builder.task().accept(builder));
+
+        // Registries: touching EpicFightRegistries creates the custom registries, then every
+        // DeferredRegister adds its entries (NeoForge: DeferredRegister#register(IEventBus)).
+        // NeoForge fires RegisterEvent in the order the registries were created (blocks before
+        // block entities, vanilla before custom), and the suppliers count on it.
+        EpicFightRegistries.DEFERRED_REGISTRIES.stream()
+            .sorted(Comparator.comparingInt(EpicFightFabric::registryCreationOrder))
+            .forEach(DeferredRegister::registerAll);
+        RegistryBuilder.bakeAll();
+        // EntityAttributeCreationEvent / EntityAttributeModificationEvent
+        EpicFightAttributes.EventBus.registerAttributes();
+        // RegisterPayloadHandlersEvent
+        EpicFightNetworkManager.register();
+        DynamicRegistries.registerSynced(EpicFightRegistries.Keys.EMOTE, Emote.CODEC, Emote.CODEC);
+
+        // RegisterCapabilitiesEvent: EpicFightCapabilities asks the item capability provider directly
+        loadModCompatibilityModules();
 
         // FMLCommonSetupEvent
         Armatures.registerEntityTypes();
@@ -224,6 +235,11 @@ public final class EpicFightFabric implements ModInitializer {
                     entries.accept(stack);
                 });
         });
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static int registryCreationOrder(DeferredRegister<?> deferredRegister) {
+        return ((Registry)BuiltInRegistries.REGISTRY).getId(BuiltInRegistries.REGISTRY.get(deferredRegister.getRegistryName()));
     }
 
     /// Upstream `EpicFightMod#loadModCompatibilityModules`. The MCreator bedrock animation module is

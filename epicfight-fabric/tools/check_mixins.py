@@ -97,6 +97,24 @@ for d in DIRS:
                         cands = [c for c in cands if c[1] == desc]
                     if not cands:
                         print(f'{f}: method {mn} not in {cls}'); problems += 1; continue
+                    # @ModifyConstant(constant = @Constant(intValue = N)): javac folds only real
+                    # constants, so `10 + font.lineHeight` has a 10, never the sum
+                    for iv in re.findall(r'@Constant\s*\(\s*intValue\s*=\s*(-?\d+)', ann):
+                        n = int(iv)
+                        pat = {-1: r'iconst_m1$', **{k: rf'iconst_{k}$' for k in range(6)}}.get(n, rf'(?:bipush|sipush|ldc(?:_w)?)\s+(?:#\d+\s+// int )?{n}$')
+                        for c in cands:
+                            count = sum(1 for line in c[2] if re.search(pat, line))
+                            if count == 0:
+                                print(f'{f}: {name}{c[1]} has no int constant {n}'); problems += 1
+                    # CONSTANT classValue (instanceof/checkcast/class literal): one of the @At entries
+                    # has to match (the others may be intermediary names for the built jar)
+                    class_values = [re.search(r'classValue=([\w/$]+)', at).group(1) for at in ats if re.search(r'"CONSTANT"', at) and re.search(r'classValue=', at)]
+                    if class_values:
+                        if am.group(1) == 'ModifyExpressionValue':
+                            print(f'{f}: @ModifyExpressionValue on a classValue gets the Class, not the instanceof result (use @WrapOperation)'); problems += 1
+                        for c in cands:
+                            if not any(re.search(r'(?:instanceof|checkcast|ldc(?:_w)?)\s+#\d+\s+// class ' + re.escape(cv) + r'$', line) for cv in class_values for line in c[2]):
+                                print(f'{f}: {name}{c[1]} has none of the classes {class_values}'); problems += 1
                     for at in ats:
                         value = re.search(r'value\s*=\s*"(\w+)"', at) or re.match(r'\s*"(\w+)"', at)
                         value = value.group(1) if value else None

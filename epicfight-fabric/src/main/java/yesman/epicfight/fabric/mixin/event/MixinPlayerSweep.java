@@ -1,7 +1,7 @@
 package yesman.epicfight.fabric.mixin.event;
 
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import net.minecraft.world.InteractionHand;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +14,9 @@ import yesman.epicfight.world.item.WeaponItem;
 public abstract class MixinPlayerSweep {
     // Loom doesn't remap the classValue of a CONSTANT injection point, so the class is given with
     // its Mojang name (development) and its intermediary name (the built jar); one of them matches.
-    @ModifyExpressionValue(
+    // On an `instanceof` the CONSTANT point needs @WrapOperation: @ModifyExpressionValue would
+    // receive the Class constant instead of the boolean result.
+    @WrapOperation(
         method = "attack",
         at = {
             @At(value = "CONSTANT", args = "classValue=net/minecraft/world/item/SwordItem"),
@@ -23,7 +25,7 @@ public abstract class MixinPlayerSweep {
         require = 1,
         allow = 1
     )
-    private boolean epicfight$canSweep(boolean isSword) {
-        return isSword || ((Player)(Object)this).getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof WeaponItem;
+    private boolean epicfight$canSweep(Object item, Operation<Boolean> original) {
+        return original.call(item) || item instanceof WeaponItem;
     }
 }

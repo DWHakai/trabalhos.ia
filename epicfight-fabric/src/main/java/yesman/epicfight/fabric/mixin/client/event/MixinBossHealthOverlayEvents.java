@@ -40,8 +40,10 @@ public abstract class MixinBossHealthOverlayEvents {
         return this.epicfight$currentEvent == null || !this.epicfight$currentEvent.isCanceled();
     }
 
-    @ModifyConstant(method = "render", constant = @Constant(intValue = 19))
+    // Vanilla: `j += 10 + this.minecraft.font.lineHeight` (the 10 is the only one in `render`);
+    // NeoForge adds the event's increment instead.
+    @ModifyConstant(method = "render", constant = @Constant(intValue = 10))
     private int epicfight$increment(int increment) {
-        return this.epicfight$currentEvent == null ? increment : this.epicfight$currentEvent.getIncrement();
+        return this.epicfight$currentEvent == null ? increment : this.epicfight$currentEvent.getIncrement() - this.minecraft.font.lineHeight;
     }
 }

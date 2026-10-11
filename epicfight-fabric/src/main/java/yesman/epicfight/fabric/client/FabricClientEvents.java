@@ -114,7 +114,9 @@ public final class FabricClientEvents {
 		EntityRendererRegistry.register(EpicFightEntityTypes.WITHER_GHOST_CLONE.get(), WitherGhostRenderer::new);
 		EntityRendererRegistry.register(EpicFightEntityTypes.WITHER_SKELETON_MINION.get(), WitherSkeletonMinionRenderer::new);
 		BlockEntityRenderers.register(EpicFightBlockEntities.FRACTURE.get(), FractureBlockRenderer::new);
-		ClientEngine.getInstance().getAuthHelper().loadPlayerSkin();
+		// Upstream loads it in RegisterRenderers, which fires after the skin manager exists; the
+		// Fabric client entrypoint runs before that
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> ClientEngine.getInstance().getAuthHelper().loadPlayerSkin());
 	}
 
 	private static void addLayers(EntityRenderersEvent.AddLayers event) {
