@@ -26,9 +26,9 @@ import java.util.function.Consumer;
 /// variable (`./gradlew runClient --args='--quickPlaySingleplayer "<world>"'`).
 ///
 /// Once in the world it gives itself the weapons, switches to Epic Fight mode, swings at a zombie,
-/// dodges and guards, and saves screenshots to `run/screenshots/smoke_*.png`, then closes the
-/// game. `EPICFIGHT_SMOKE_TEST=skills` runs only the dodge and guard part. Nothing here runs in a
-/// normal game.
+/// dodges, guards and uses each weapon's innate skill, and saves screenshots to
+/// `run/screenshots/smoke_*.png`, then closes the game. `EPICFIGHT_SMOKE_TEST=skills` runs only
+/// the dodge and guard part, `innate` only the innate skills. Nothing here runs in a normal game.
 public final class PortSmokeTest {
     private static final String[] WEAPONS = {
         "iron_longsword", "iron_tachi", "iron_spear", "iron_greatsword", "iron_dagger", "uchigatana", "bokken"
@@ -162,16 +162,73 @@ public final class PortSmokeTest {
         return tick + 55;
     }
 
+    /// The innate skill of each weapon: hold the attack button (the innate skill shares it) past the
+    /// long press threshold, then release. Creative mode, so the skills don't need charge.
+    private static int buildInnateSkillSteps(int tick) {
+        at(tick, mc -> {
+            command(mc, "kill @e[type=!player]");
+            command(mc, "tp @s -268.9 71 38.6 0 10");
+            command(mc, "epicfight mode epicfight");
+            mc.options.hideGui = true;
+            mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
+        });
+        tick += 20;
+
+        for (int slot = 0; slot < WEAPONS.length; slot++) {
+            final int s = slot;
+            final String weapon = WEAPONS[slot];
+            // the greatsword's skill charges while held and goes off on release
+            final int hold = "iron_greatsword".equals(weapon) ? 30 : 6;
+            final int start = tick;
+
+            at(start, mc -> {
+                mc.player.getInventory().selected = s;
+                command(mc, "kill @e[type=husk]");
+                command(mc, "tp @s -268.9 71 38.6 0 10");
+                command(mc, "summon husk -268.9 71 41.1 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f]}");
+            });
+            // the tachi's skill (rushing tempo) only follows one of its auto attacks
+            if ("iron_tachi".equals(weapon)) {
+                at(start + 4, PortSmokeTest::attack);
+            }
+
+            at(start + 10, mc -> {
+                logPlayer(mc, "before innate " + weapon);
+                KeyMapping.click(mc.options.keyAttack.getDefaultKey());
+                EpicFightKeyMappings.WEAPON_INNATE_SKILL.setDown(true);
+            });
+            at(start + 14, mc -> logPlayer(mc, "innate " + weapon + " +4"));
+            at(start + 10 + hold, mc -> EpicFightKeyMappings.WEAPON_INNATE_SKILL.setDown(false));
+            at(start + 16 + hold, mc -> {
+                logPlayer(mc, "innate " + weapon + " released +6");
+                screenshot(mc, "9_innate_" + weapon);
+            });
+            at(start + 26 + hold, mc -> logPlayer(mc, "innate " + weapon + " released +16"));
+            at(start + 50 + hold, mc -> {
+                logPlayer(mc, "after innate " + weapon);
+                logZombie(mc, "after innate " + weapon);
+            });
+            tick += 60 + hold;
+        }
+
+        return tick;
+    }
+
     private static void buildSteps() {
-        if ("skills".equals(System.getenv("EPICFIGHT_SMOKE_TEST"))) {
+        String mode = System.getenv("EPICFIGHT_SMOKE_TEST");
+
+        if ("skills".equals(mode) || "innate".equals(mode)) {
             at(40, mc -> {
                 command(mc, "gamemode creative");
                 command(mc, "time set day");
                 command(mc, "weather clear");
                 command(mc, "clear");
-                command(mc, "item replace entity @s hotbar.0 with epicfight:iron_longsword");
+
+                for (int i = 0; i < WEAPONS.length; i++) {
+                    command(mc, "item replace entity @s hotbar." + i + " with epicfight:" + WEAPONS[i]);
+                }
             });
-            int end = buildSkillSteps(60);
+            int end = "skills".equals(mode) ? buildSkillSteps(60) : buildInnateSkillSteps(60);
             at(end, mc -> {
                 EpicFightMod.LOGGER.warn("[smoke test] done");
                 mc.stop();
@@ -281,6 +338,7 @@ public final class PortSmokeTest {
 
         tick += 30;
         tick = buildSkillSteps(tick);
+        tick = buildInnateSkillSteps(tick);
 
         at(tick, mc -> {
             EpicFightMod.LOGGER.warn("[smoke test] done");

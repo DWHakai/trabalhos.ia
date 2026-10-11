@@ -128,6 +128,13 @@ golpe defendido não tira vida e gasta 0,3 de stamina, o sem defesa tira 4. Aten
 Fight lê o estado físico do mouse (`InputManager#isPhysicalKeyDown`), então clicar na janela
 durante o teste muda o resultado.
 
+`EPICFIGHT_SMOKE_TEST=innate` usa a habilidade especial (innate skill) de cada arma no criativo,
+segurando o botão de ataque perto de um husk (a espada grande segura 30 ticks porque carrega; a
+tachi ataca antes, porque o Rushing Tempo só sai no meio do combo). Comparado com o upstream em
+11/10/2026: as mesmas animações (Liechtenauer, Rushing Tempo, Grasping Spire, Steel Whirlwind,
+Eviscerate, Battojutsu, Sweeping Edge) e a mesma vida no husk depois (a uchigatana varia uns
+centésimos entre execuções, no upstream também).
+
 ### Conferir os mixins sem abrir o jogo
 
 O Mixin só confere os alvos quando a classe carrega. `tools/check_mixins.py` confere todos os
