@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import software.bernie.geckolib.cache.object.GeoBone;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
 
-@Mixin(value = GeoArmorRenderer.class)
+@Mixin(value = GeoArmorRenderer.class, remap = false)
 public interface MixinGeoArmorRenderer {
 	@Accessor
 	public GeoBone getHead();

@@ -2,8 +2,6 @@ package yesman.epicfight.compat.geckolib;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import software.bernie.geckolib.event.GeoRenderEvent;
 import yesman.epicfight.api.client.event.EpicFightClientEventHooks;
 import yesman.epicfight.api.client.model.transformer.HumanoidModelBaker;
@@ -18,30 +16,19 @@ import yesman.epicfight.world.gamerule.EpicFightGameRules;
 
 public class GeckolibCompat implements ICompatModule {
 	@Override
-	public void onModEventBusClient(IEventBus eventBus) {
-		eventBus.<FMLClientSetupEvent>addListener(event -> event.enqueueWork(() -> HumanoidModelBaker.registerNewTransformer(new GeoModelTransformer())));
-	}
-	
-	@Override
-	public void onGameEventBusClient(IEventBus eventBus) {
+	public void onClientInit() {
+		HumanoidModelBaker.registerNewTransformer(new GeoModelTransformer());
         EpicFightClientEventHooks.Render.ANIMATED_ARMOR_TEXTURE.registerEvent(GeoModelTransformer::getGeoArmorTexturePath);
-		eventBus.addListener(this::geoEntityRenderPreEvent);
-		eventBus.addListener(this::geoEntityRenderPostEvent);
+		// GeckoLib Fabric: the pre listener returns false to cancel the render
+		GeoRenderEvent.Entity.Pre.EVENT.register(this::geoEntityRenderPreEvent);
+		GeoRenderEvent.Entity.Post.EVENT.register(this::geoEntityRenderPostEvent);
 	}
 	
-	@Override
-	public void onModEventBus(IEventBus eventBus) {
-	}
-	
-	@Override
-	public void onGameEventBus(IEventBus eventBus) {
-	}
-	
-	public void geoEntityRenderPreEvent(GeoRenderEvent.Entity.Pre event) {
+	public boolean geoEntityRenderPreEvent(GeoRenderEvent.Entity.Pre event) {
 		Entity entity = event.getEntity();
 		
 		if (entity.level() == null) {
-			return;
+			return true;
 		}
 		
 		if (entity instanceof LivingEntity livingentity) {
@@ -50,6 +37,7 @@ public class GeckolibCompat implements ICompatModule {
 			if (renderEngine.hasRendererFor(livingentity)) {
 				LivingEntityPatch<?> entitypatch = EpicFightCapabilities.getEntityPatch(livingentity, LivingEntityPatch.class);
 				LocalPlayerPatch playerpatch = null;
+				boolean cancel = false;
 				float originalYRot = 0.0F;
 				
 				if ((event.getPartialTick() == 0.0F || event.getPartialTick() == 1.0F) && entitypatch instanceof LocalPlayerPatch localPlayerPatch) {
@@ -60,7 +48,7 @@ public class GeckolibCompat implements ICompatModule {
 				}
 				
 				if (entitypatch != null && entitypatch.overrideRender()) {
-					event.setCanceled(true);
+					cancel = true;
 					renderEngine.renderEntityArmatureModel(livingentity, entitypatch, event.getRenderer(), event.getBufferSource(), event.getPoseStack(), event.getPackedLight(), event.getPartialTick());
 					
 					if (EpicFightCapabilities.getCachedLocalPlayerPatch() != null && !renderEngine.minecraft.options.hideGui && !EpicFightGameRules.DISABLE_ENTITY_UI.getRuleValue(livingentity.level())) {
@@ -75,8 +63,12 @@ public class GeckolibCompat implements ICompatModule {
 				if (playerpatch != null) {
 					playerpatch.disableModelYRotInGui(originalYRot);
 				}
+				
+				return !cancel;
 			}
 		}
+		
+		return true;
 	}
 	
 	public void geoEntityRenderPostEvent(GeoRenderEvent.Entity.Post event) {

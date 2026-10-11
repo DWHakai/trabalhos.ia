@@ -25,12 +25,17 @@
     ],
     "client": [
       "yesman.epicfight.fabric.client.EpicFightFabricClient"
+    ],
+    "controlify": [
+      "yesman.epicfight.compat.controlify.EpicFightControlifyEntrypoint"
     ]
   },
   "accessWidener": "epicfight.accesswidener",
   "mixins": [
     "epicfight.mixins.json",
-    "epicfight.fabric.mixins.json"
+    "epicfight.fabric.mixins.json",
+    "epicfight-compat.geckolib.mixins.json",
+    "epicfight-compat.skinlayers3d.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${loader_version}",

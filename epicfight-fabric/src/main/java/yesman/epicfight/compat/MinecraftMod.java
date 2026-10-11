@@ -4,13 +4,22 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import yesman.epicfight.EpicFight;
+import yesman.epicfight.compat.firstperson.FirstPersonCompat;
+import yesman.epicfight.compat.geckolib.GeckolibCompat;
+import yesman.epicfight.compat.iris.IRISCompat;
+import yesman.epicfight.compat.playeranimator.PlayerAnimatorCompat;
+import yesman.epicfight.compat.skinlayer3d.SkinLayer3DCompat;
 
 // List of mods with custom compatibility modules.
 // Only includes mods requiring manual registration via ICompatModule.
 // Mods with official API entry-points (e.g., Shoulder Surfing, Controlify, JEI, KubeJS) are excluded.
 public enum MinecraftMod {
     // Fabric port: only the integrations whose mods exist on Fabric are listed (see PORTING.md).
-    ;
+    GECKO_LIB("geckolib", true, GeckolibCompat.class),
+    FIRST_PERSON("firstperson", true, FirstPersonCompat.class),
+    SKIN_LAYERS_3D("skinlayers3d", true, SkinLayer3DCompat.class),
+    IRIS("iris", true, IRISCompat.class),
+    PLAYER_ANIMATOR("playeranimator", true, PlayerAnimatorCompat.class);
 
     private final @NotNull String modId;
     private final boolean isClientOnly;

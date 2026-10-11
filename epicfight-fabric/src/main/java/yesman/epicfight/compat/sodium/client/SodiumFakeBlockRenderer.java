@@ -35,7 +35,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import yesman.epicfight.api.client.model.Mesh;
 import yesman.epicfight.client.renderer.EpicFightRenderTypes;
 import yesman.epicfight.client.renderer.FakeBlockRenderer;
 
@@ -64,7 +64,7 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 		int originZ = (bp.getZ() & 15);
 		
 		for (Direction d : DIRECTIONS) {
-			List<BakedQuad> culledFaces = model.getQuads(bs, d, randomsource, ModelData.EMPTY, null);
+			List<BakedQuad> culledFaces = model.getQuads(bs, d, randomsource);
 			mutablepos.setWithOffset(bp, d);
 			
 			if (Block.shouldRenderFace(bs, level, bp, d, mutablepos)) {
@@ -72,7 +72,7 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 			}
 		}
 		
-		this.renderPreviewBlocks(buffer, level, model.getQuads(bs, null, randomsource, ModelData.EMPTY, null), originX, originY, originZ, offset, r, g, b, a);
+		this.renderPreviewBlocks(buffer, level, model.getQuads(bs, null, randomsource), originX, originY, originZ, offset, r, g, b, a);
 		
 		RenderSystem.getModelViewStack().pushMatrix();
 		RenderSystem.getModelViewStack().mul(poseStack.last().pose());
@@ -153,10 +153,10 @@ public class SodiumFakeBlockRenderer implements FakeBlockRenderer {
 					f5 = afloat[k] * pBlue;
 				}
 
-				int l = vertexConsumer.applyBakedLighting(pCombinedLights[k], bytebuffer);
+				int l = Mesh.DrawingFunction.applyBakedLighting(pCombinedLights[k], bytebuffer);
 				float f9 = bytebuffer.getFloat(16);
 				float f10 = bytebuffer.getFloat(20);
-				vertexConsumer.applyBakedNormals(vector3f, bytebuffer, new Matrix3f());
+				Mesh.DrawingFunction.applyBakedNormals(vector3f, bytebuffer, new Matrix3f());
 				float vertexAlpha = pMulColor ? alpha * (float) (bytebuffer.get(15) & 255) / 255.0F : alpha;
 				
 				vertexConsumer.addVertex(outX, outY, outZ)

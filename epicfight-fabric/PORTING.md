@@ -4,8 +4,8 @@ Port do **Epic Fight 21.17.3.1 (Minecraft 1.21.1, NeoForge)** para **Fabric**.
 Base: branch `1.21.1` do repositório oficial, commit `a78aa24`
 (`upstream_commit` em `gradle.properties`).
 
-> **Status: `./gradlew build` passa e os eventos comuns de gameplay estão ligados
-> (etapa 2).** Ainda não testado em jogo: os alvos dos mixins só são conferidos em runtime.
+> **Status: `./gradlew build` passa, com eventos, rede, engines de cliente, tela de config e
+> integrações portados.** Ainda não testado em jogo (`./gradlew runClient`).
 
 ## Licença
 
@@ -64,7 +64,7 @@ Minecraft (`validateAccessWidener` roda no `build`).
 | Enum extension (`Rarity.EPICFIGHT_UNIQUE`) | não usado pelo mod: `UNIQUE` aponta para `Rarity.EPIC` | feito |
 | Métodos que o NeoForge adiciona em classes vanilla (`IItemExtension`, `ClientHooks`, `EventHooks`…) | interfaces injetadas pelo Loom (`fabric/ext`) + mixins, ou o comportamento padrão do NeoForge escrito direto | feito para o que compila |
 | Mixins do upstream (38) | conferidos contra o bytecode do Minecraft com `tools/check_mixins.py`; o único que dependia da tabela de locals inteira (`MixinLevelRenderer`) usa `@Local` | feito |
-| Integrações (GeckoLib, Iris/Sodium, Controlify, JEI, Curios, KubeJS…) | versões Fabric dessas libs | **fase 4**, opcional |
+| Integrações com outros mods | as que existem no Fabric, ver "Integrações" abaixo | feito (só compila; não testado com os mods instalados) |
 
 ## Fases
 
@@ -75,6 +75,29 @@ Minecraft (`validateAccessWidener` roda no `build`).
 3. **Acabamento**: o que o compilador apontar, `PartEntity` do dragão, enum, revisão
    dos 38 mixins, testes em jogo.
 4. **Integrações opcionais** com outros mods.
+
+## Integrações
+
+Só as dos mods que têm versão Fabric. Entram como `modCompileOnly` (o jar não depende delas) e
+só carregam quando o mod está instalado.
+
+| Mod | Como liga |
+|---|---|
+| GeckoLib, Iris (+ Sodium), First Person Model, 3D Skin Layers, player-animation-lib | `compat/MinecraftMod` → `ICompatModule`: `onCommonInit` no entrypoint principal, `onClientInit` no de cliente (onde o upstream usava o `FMLClientSetupEvent`) |
+| Controlify | entrypoint `controlify` no `fabric.mod.json` (no upstream era `META-INF/services`) |
+| Shoulder Surfing | `shouldersurfing_plugin.json` na raiz do mod, igual ao upstream |
+
+Diferenças do upstream:
+- GeckoLib: no Fabric o `GeoRenderEvent.Entity.Pre` cancela devolvendo `false`.
+- 3D Skin Layers: as malhas ficavam num data attachment do jogador; aqui é um `WeakHashMap` no
+  cliente. A skin vem de `player.getSkin().texture()` em vez do `PlayerUtil` do TRansition
+  (que no Fabric vem dentro do jar do 3D Skin Layers e não aparece na compilação).
+- Sodium: `getQuads` sem `ModelData` e a luz/normal da quad com as cópias de `Mesh.DrawingFunction`.
+
+Descartadas (sem versão Fabric ou fora do escopo): Vampirism, Werewolves, KubeJS, Curios, JEI,
+AzureLib, Better Third Person, Wildfire's Female Gender Mod, MCreator, PlayerRevive, Simply
+Tooltips. Ficam excluídas no `build.gradle`; os recursos delas estão em
+`upstream-meta/compat-resources`.
 
 ### Conferir os mixins sem abrir o jogo
 
@@ -90,7 +113,7 @@ python tools/check_mixins.py <JDK>/bin/javap .gradle/loom-cache/minecraftMaven/n
 
 `build.gradle` exclui, sem apagar, o código que ainda não foi portado:
 `client/platform/neoforge/**` (handlers do NeoForge, já refeitos em `fabric/client`), as
-integrações ainda não portadas ou sem versão Fabric (`compat/<mod>/**`) e o
+integrações sem versão Fabric (`compat/<mod>/**`) e o
 datagen (`data/DataEvents`, `data/tags`, `data/recipes`). Os recursos das integrações
 estão em `upstream-meta/compat-resources`.
 

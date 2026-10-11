@@ -21,6 +21,7 @@ import yesman.epicfight.client.input.EpicFightKeyMappings;
 import yesman.epicfight.client.renderer.EpicFightShaders;
 import yesman.epicfight.client.renderer.patched.item.EpicFightItemProperties;
 import yesman.epicfight.client.renderer.shader.compute.loader.ComputeShaderProvider;
+import yesman.epicfight.compat.ICompatModule;
 import yesman.epicfight.config.ClientConfig;
 import yesman.epicfight.fabric.FabricReloadListener;
 import yesman.epicfight.platform.client.event.ClientTickEvent;
@@ -63,6 +64,7 @@ public final class EpicFightFabricClient implements ClientModInitializer {
         CommonEntityPatchProvider.ClientModule.registerClientPlayerPatches();
         SkillBookScreen.registerIconItems();
         EpicFightItemProperties.registerItemProperties();
+        ICompatModule.initClientModules();
 
         // Needs an OpenGL context and the loaded client config. Runs before the first resource
         // reload applies, so before the compute shaders are loaded.

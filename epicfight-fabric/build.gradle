@@ -25,6 +25,14 @@ repositories {
         forRepository { maven { name = "IsXander"; url = "https://maven.isxander.dev/releases" } }
         filter { includeGroup "dev.isxander" }
     }
+    exclusiveContent {
+        forRepository { maven { name = "GeckoLib"; url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/" } }
+        filter { includeGroup "software.bernie.geckolib" }
+    }
+    exclusiveContent {
+        forRepository { maven { name = "KosmX (player-animation-lib)"; url = "https://maven.kosmx.dev/" } }
+        filter { includeGroup "dev.kosmx.player-anim" }
+    }
     maven { name = "ParchmentMC"; url = "https://maven.parchmentmc.org" }
     maven {
         name = "Fuzs Mod Resources (Forge Config API Port)"
@@ -54,6 +62,11 @@ dependencies {
     modCompileOnly "maven.modrinth:iris:${project.iris_version}"
     modCompileOnly "maven.modrinth:sodium:${project.sodium_version}"
     modCompileOnly("dev.isxander:controlify:${project.controlify_version}") { transitive = false }
+    modCompileOnly("software.bernie.geckolib:geckolib-fabric-1.21.1:${project.geckolib_version}") { transitive = false }
+    modCompileOnly("dev.kosmx.player-anim:player-animation-lib-fabric:${project.player_anim_version}") { transitive = false }
+    modCompileOnly "maven.modrinth:shoulder-surfing-reloaded:${project.shoulder_surfing_version}"
+    modCompileOnly "maven.modrinth:first-person-model:${project.first_person_model_version}"
+    modCompileOnly "maven.modrinth:3dskinlayers:${project.skinlayers_version}"
 
     // javax.annotation (@Nullable etc.), shipped by NeoForge but not by Fabric
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
@@ -74,18 +87,11 @@ sourceSets.main.java {
     exclude "yesman/epicfight/compat/betterthirdperson/**"
     exclude "yesman/epicfight/compat/curiosapi/**"
     exclude "yesman/epicfight/compat/fgm/**"
-    exclude "yesman/epicfight/compat/firstperson/**"
-    exclude "yesman/epicfight/compat/geckolib/**"
-    exclude "yesman/epicfight/compat/iris/**"
     exclude "yesman/epicfight/compat/jei/**"
     exclude "yesman/epicfight/compat/kubejs/**"
     exclude "yesman/epicfight/compat/mcreator/**"
-    exclude "yesman/epicfight/compat/playeranimator/**"
     exclude "yesman/epicfight/compat/playerrevive/**"
-    exclude "yesman/epicfight/compat/shouldersurfing/**"
     exclude "yesman/epicfight/compat/simplytooltips/**"
-    exclude "yesman/epicfight/compat/skinlayer3d/**"
-    exclude "yesman/epicfight/compat/sodium/**"
     exclude "yesman/epicfight/compat/vampirism/**"
     exclude "yesman/epicfight/compat/werewolves/**"
     // Data generation (NeoForge GatherDataEvent): not needed to play,

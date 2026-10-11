@@ -33,6 +33,8 @@ import yesman.epicfight.client.gui.widgets.AnchoredButton;
 import yesman.epicfight.client.gui.widgets.ColorDeterminator;
 import yesman.epicfight.client.gui.widgets.common.WidgetTheme;
 import yesman.epicfight.client.online.cosmetics.Emote;
+import yesman.epicfight.compat.ICompatModule;
+import yesman.epicfight.compat.MinecraftMod;
 import yesman.epicfight.config.ClientConfig;
 import yesman.epicfight.config.CommonConfig;
 import yesman.epicfight.config.ServerConfig;
@@ -129,7 +131,7 @@ public final class EpicFightFabric implements ModInitializer {
         DynamicRegistries.registerSynced(EpicFightRegistries.Keys.EMOTE, Emote.CODEC, Emote.CODEC);
 
         // RegisterCapabilitiesEvent: EpicFightCapabilities asks the item capability provider directly
-        // TODO(port, phase 4): optional mod integrations (loadModCompatibilityModules)
+        loadModCompatibilityModules();
 
         // FMLConstructModEvent
         LivingMotion.ENUM_MANAGER.loadEnum();
@@ -222,5 +224,17 @@ public final class EpicFightFabric implements ModInitializer {
                     entries.accept(stack);
                 });
         });
+    }
+
+    /// Upstream `EpicFightMod#loadModCompatibilityModules`. The MCreator bedrock animation module is
+    /// not ported. Mods with their own entrypoint (Controlify, Shoulder Surfing) are not listed.
+    private static void loadModCompatibilityModules() {
+        final boolean isClientSide = EpicFightSharedConstants.isPhysicalClient();
+
+        for (MinecraftMod mod : MinecraftMod.values()) {
+            if (FabricLoader.getInstance().isModLoaded(mod.getModId()) && (isClientSide || !mod.isClientOnly())) {
+                ICompatModule.loadCompatModule(mod.getCompatibilityModule());
+            }
+        }
     }
 }
